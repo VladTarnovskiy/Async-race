@@ -1,0 +1,60 @@
+.color__wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba($light-blue-color, $alpha: 0.5);
+    padding: 20px;
+    border-radius: 10px;
+
+    .color__item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+
+        .color__display {
+            height: 26px;
+            width: 200px;
+            background-color: $white-color;
+            border-radius: 3px;
+            margin-right: 5px;
+        }
+
+        .color__input {
+            width: 50px;
+            height: 26px;
+            border-radius: 3px;
+            border: none;
+        }
+
+        .color__button {
+            height: 26px;
+            width: 65px;
+            padding-top: 5px;
+            margin-left: 15px;
+            font-size: 1.3rem;
+        }
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.3rem;
+        width: 100%;
+        margin-top: 10px;
+
+        .button_control {
+            height: 26px;
+            padding-top: 5px;
+            width: 80px;
+        }
+
+        .button_race {}
+
+        .button_reset {}
+
+        .button_generate {}
+    }
+}

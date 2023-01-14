@@ -1,0 +1,21 @@
+html {
+    font-family: $main-font;
+    font-size: 10px;
+}
+
+body {
+    background-image: url(../assets/background.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-size: 10px;
+}
+
+.wrapper {
+    position: relative;
+    padding-bottom: 100px;
+    // max-width: 1440px;
+    width: 100%;
+    margin: auto;
+    min-height: calc(100vh - 104px);
+}

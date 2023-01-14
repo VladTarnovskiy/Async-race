@@ -1,0 +1,61 @@
+.footer {
+    height: 100px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: 0;
+    box-sizing: border-box;
+    background-color: $light-orange-color;
+
+    .footer__list {
+        display: flex;
+        justify-content: space-around;
+        list-style-type: none;
+        margin-left: 4px;
+        margin-right: 4px;
+        padding-left: 0px;
+        padding-top: 10px;
+        border-radius: 5px;
+        width: 100%;
+
+        .footer__date {
+            font-size: 2.2rem;
+            font-weight: 200;
+            font-family: $roboto-light-font;
+            color: $black-color;
+            text-align: center;
+            padding-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .footer__rs-logo {
+            background-image: url(../assets/logo-rsschool3.png);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+
+        .footer__git-logo {
+            background-image: url(../assets/github.svg);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+
+        .footer__rs-logo,
+        .footer__git-logo {
+            display: block;
+            width: 110px;
+            height: 40px;
+            cursor: pointer;
+        }
+
+        .footer__rs-logo:hover,
+        .footer__git-logo:hover {
+            @extend %transition;
+            transform: scale(1.03);
+        }
+    }
+}
