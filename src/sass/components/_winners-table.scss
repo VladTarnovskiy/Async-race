@@ -1,0 +1,30 @@
+.winners__table {
+    width: 910px;
+    margin: auto;
+    background-color: rgba($light-blue-color, $alpha: 0.8);
+    // border-radius: 10px;
+
+    .table__header {
+        display: flex;
+        justify-content: space-between;
+        font-family: $roboto-bold-font;
+        font-size: 2.5rem;
+        text-align: center;
+        background-color: rgba($blue-color, $alpha: 0.8);
+        height: 50px;
+    }
+
+    .table__header-item {
+        width: 180px;
+        border: 1px $black-color solid;
+        padding-top: 10px;
+    }
+
+    .table__main {
+        display: flex;
+        justify-content: space-between;
+        font-family: $main-font;
+        font-size: 2.5rem;
+        text-align: center;
+    }
+}

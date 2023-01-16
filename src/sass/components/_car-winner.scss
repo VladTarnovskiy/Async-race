@@ -1,0 +1,17 @@
+.table__main-item {
+    width: 182px;
+    border-right: 1px #302b2b solid;
+    position: relative;
+    box-sizing: border-box;
+
+    .table__main_car-img {
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+.table__main_time {
+    border: none;
+}

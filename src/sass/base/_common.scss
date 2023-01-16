@@ -17,5 +17,14 @@ body {
     // max-width: 1440px;
     width: 100%;
     margin: auto;
-    min-height: calc(100vh - 104px);
+    min-height: calc(100vh - 110px);
+}
+
+.input {
+    outline: none;
+    border: 1px $black-color solid;
+
+    &:focus {
+        box-shadow: 0 0 0 0.25rem rgba($orange-color, 0.8);
+    }
 }

@@ -1,0 +1,70 @@
+.car {
+    @extend %block-style;
+    padding: 10px;
+    background-color: rgba($light-blue-color, $alpha: 0.8);
+
+
+    .car__manage {
+        display: flex;
+        justify-content: flex-start;
+        font-size: 2rem;
+        margin-top: 5px;
+        margin-bottom: 5px;
+
+        .car__but {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+
+        .car__brand {
+            margin-left: 15px;
+        }
+    }
+
+    .car__drive {
+        display: flex;
+        justify-content: flex-start;
+        font-size: 2rem;
+        @extend %block-border;
+        border-color: $black-color;
+        width: fit-content;
+
+        .car__but-drive {
+            margin-right: 10px;
+            font-size: 1.5rem;
+            border: $black-color 1px solid;
+            padding-top: 3px;
+            border-radius: 5px;
+        }
+
+        .car__but_stop {
+            margin-right: 0;
+        }
+    }
+
+    .car__road {
+        width: 100%;
+        border-bottom: 3px $white-color dashed;
+        height: 45px;
+        position: relative;
+
+        .car__img {
+            position: absolute;
+            fill: red;
+            bottom: -32px;
+            left: 0;
+        }
+
+        .car__flag {
+            position: absolute;
+            right: 100px;
+            bottom: 0;
+            height: 45px;
+            width: 45px;
+            background-image: url(../assets/icon.ico);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+    }
+}

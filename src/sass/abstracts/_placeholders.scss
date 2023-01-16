@@ -25,3 +25,23 @@
     background-repeat: no-repeat;
     background-size: contain;
 }
+
+%block-style {
+    background-color: rgba($light-blue-color, $alpha: 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+%title-block-style {
+    background-color: rgba($orange-color, $alpha: 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+%block-border {
+    padding: 5px;
+    border: 1px $neon-blue-color solid;
+    border-radius: 10px;
+}

@@ -8,8 +8,9 @@ export default class Console {
     const colorItemCreate = <HTMLElement>document.createElement('div');
     colorItemCreate.className = 'color__item color__item_create';
 
-    const colorDisplayCreate = <HTMLElement>document.createElement('div');
-    colorDisplayCreate.className = 'color__display color__display_create';
+    const colorDisplayCreate = <HTMLElement>document.createElement('input');
+    colorDisplayCreate.setAttribute('type', 'text');
+    colorDisplayCreate.className = 'input color__display color__display_create';
 
     const colorInputCreate = <HTMLElement>document.createElement('input');
     colorInputCreate.className = 'color__input color__input_create';
@@ -27,8 +28,9 @@ export default class Console {
     const colorItemUpdate = <HTMLElement>document.createElement('div');
     colorItemUpdate.className = 'color__item color__item_update';
 
-    const colorDisplayUpdate = <HTMLElement>document.createElement('div');
-    colorDisplayUpdate.className = 'color__display color__display_update';
+    const colorDisplayUpdate = <HTMLElement>document.createElement('input');
+    colorDisplayUpdate.setAttribute('type', 'text');
+    colorDisplayUpdate.className = 'input color__display color__display_update';
 
     const colorInputUpdate = <HTMLElement>document.createElement('input');
     colorInputUpdate.className = 'color__input color__input_update';

@@ -1,27 +1,25 @@
-import Main from './pages/main/main';
-import Basket from './pages/basket/basket';
+import Garage from './pages/garage/garage';
+import Winners from './pages/basket/winners';
 import Error from './pages/error/error';
 
 export class AppView {
-  main: Main;
-  basket: Basket;
+  garage: Garage;
+  winners: Winners;
   error: Error;
 
   constructor() {
-    this.main = new Main();
-    this.basket = new Basket();
+    this.garage = new Garage();
+    this.winners = new Winners();
     this.error = new Error();
   }
 
-
   drawMain(): void {
-    this.main.draw();
+    this.garage.draw();
   }
 
   drawBasket(): void {
-    this.basket.draw();
+    this.winners.draw();
   }
-
 
   drawError(): void {
     this.error.draw();

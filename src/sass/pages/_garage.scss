@@ -1,0 +1,59 @@
+.main {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    margin-top: 20px;
+    @extend %wrapper;
+
+    .console {
+        width: 375px;
+    }
+
+    .garage {
+        margin-top: 10px;
+
+        .garage__title {
+            font-family: $roboto-bold-font;
+            font-size: 2.5rem;
+            text-align: center;
+            @extend %title-block-style;
+            padding: 5px;
+        }
+
+        .garage__pagination {
+            font-family: $main-font;
+            font-size: 2rem;
+            padding: 5px;
+        }
+
+        .garage__cars {
+            padding: 5px;
+            margin-top: 10px;
+            box-sizing: border-box;
+            @extend %title-block-style;
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+    }
+
+    .pages {
+        font-family: $roboto-bold-font;
+        font-size: 2.5rem;
+        text-align: center;
+        @extend %title-block-style;
+        padding: 5px;
+        display: flex;
+        justify-content: center;
+        @extend %wrapper;
+        margin-top: 10px;
+
+        .pages__but {
+            margin: 10px;
+            font-size: 2rem;
+            border-radius: 5px;
+            padding-right: 20px;
+            padding-left: 20px;
+        }
+    }
+}

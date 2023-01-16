@@ -1,5 +1,5 @@
 .button {
-  font-family: $roboto-bold-font;
+  font-family: $main-font;
   border: none;
   border-radius: 10px;
   @extend %transition;
@@ -19,6 +19,6 @@
   &:active {
     @extend %btn-hover;
     transform: scale(1.01);
-    color: $green-color;
+    color: $neon-blue-color;
   }
 }

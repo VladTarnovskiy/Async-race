@@ -3,9 +3,7 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    background-color: rgba($light-blue-color, $alpha: 0.5);
-    padding: 20px;
-    border-radius: 10px;
+    @extend %block-style;
 
     .color__item {
         display: flex;
@@ -31,7 +29,7 @@
         .color__button {
             height: 26px;
             width: 65px;
-            padding-top: 5px;
+            padding-top: 6px;
             margin-left: 15px;
             font-size: 1.3rem;
         }
@@ -44,10 +42,11 @@
         font-size: 1.3rem;
         width: 100%;
         margin-top: 10px;
+        @extend %block-border;
 
         .button_control {
             height: 26px;
-            padding-top: 5px;
+            padding-top: 6px;
             width: 80px;
         }
 
