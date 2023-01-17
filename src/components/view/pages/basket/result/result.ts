@@ -10,7 +10,7 @@ export default class Result {
 
     const headerNumber = <HTMLElement>document.createElement('div');
     headerNumber.className = 'table__header-item table__header_number';
-    headerNumber.textContent = 'Number';
+    headerNumber.textContent = '№';
 
     const headerCar = <HTMLElement>document.createElement('div');
     headerCar.className = 'table__header-item table__header_car';
@@ -24,9 +24,19 @@ export default class Result {
     headerWins.className = 'table__header-item table__header_wins';
     headerWins.textContent = 'Wins';
 
+    const headerWinsIcon = <HTMLElement>document.createElement('span');
+    headerWinsIcon.className = 'table__header_wins-icon';
+
+    headerWins.appendChild(headerWinsIcon);
+
     const headerTime = <HTMLElement>document.createElement('div');
     headerTime.className = 'table__header-item table__header_time';
-    headerTime.textContent = 'Best time (sec)';
+    headerTime.textContent = 'Best time';
+
+    const headerTimeIcon = <HTMLElement>document.createElement('span');
+    headerTimeIcon.className = 'table__header_time-icon';
+
+    headerTime.appendChild(headerTimeIcon);
 
     const winnersTableMain = <HTMLElement>document.createElement('div');
     winnersTableMain.className = 'table__main';

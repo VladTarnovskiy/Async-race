@@ -13,10 +13,20 @@ class Header {
     buttonGarage.textContent = 'To garage';
     buttonGarage.setAttribute('href', '#?');
 
+    const buttonGarageIcon = <HTMLElement>document.createElement('span');
+    buttonGarageIcon.className = 'but_garage-icon';
+
+    buttonGarage.appendChild(buttonGarageIcon);
+
     const buttonWinners = <HTMLElement>document.createElement('a');
     buttonWinners.className = 'button but_link but_winners';
     buttonWinners.textContent = 'To winners';
     buttonWinners.setAttribute('href', '#winners-page?');
+
+    const buttonWinnersIcon = <HTMLElement>document.createElement('span');
+    buttonWinnersIcon.className = 'but_winners-icon';
+
+    buttonWinners.appendChild(buttonWinnersIcon);
 
     buttonContainer.appendChild(buttonGarage);
     buttonContainer.appendChild(buttonWinners);

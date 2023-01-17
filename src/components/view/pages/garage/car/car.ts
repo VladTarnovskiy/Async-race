@@ -1,9 +1,12 @@
+import { CarItem } from '../../../../types/types';
+
 export default class Car {
-  draw(): void {
+  draw(data: CarItem): void {
     const garage = <HTMLElement>document.querySelector('.garage__cars');
 
     const car = <HTMLElement>document.createElement('div');
     car.className = 'car';
+    car.setAttribute('data-id', `${data.id}`);
 
     const blockManage = <HTMLElement>document.createElement('div');
     blockManage.className = 'car__manage';
@@ -18,11 +21,14 @@ export default class Car {
 
     const carBrand = <HTMLElement>document.createElement('div');
     carBrand.className = 'car__brand';
-    carBrand.textContent = 'No Name Brand';
+    carBrand.textContent = `${data.name}`;
 
     blockManage.appendChild(buttonSelect);
     blockManage.appendChild(buttonRemove);
     blockManage.appendChild(carBrand);
+
+    const raceBlock = <HTMLElement>document.createElement('div');
+    raceBlock.className = 'car__race';
 
     const blockDrive = <HTMLElement>document.createElement('div');
     blockDrive.className = 'car__drive';
@@ -41,7 +47,7 @@ export default class Car {
     const blockRoad = <HTMLElement>document.createElement('div');
     blockRoad.className = 'car__road';
 
-    const carImg = `<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    const carImg = `<svg fill="${data.color}" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
     width="90px" height="90px" viewBox="0 0 324.018 324.017"
     xml:space="preserve">
     <g>
@@ -82,9 +88,11 @@ export default class Car {
     blockRoad.appendChild(imgFlag);
     blockRoad.appendChild(imgCar);
 
+    raceBlock.appendChild(blockDrive);
+    raceBlock.appendChild(blockRoad);
+
     car.appendChild(blockManage);
-    car.appendChild(blockDrive);
-    car.appendChild(blockRoad);
+    car.appendChild(raceBlock);
 
     garage.appendChild(car);
   }

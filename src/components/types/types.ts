@@ -1,18 +1,12 @@
-export interface CardItem {
+export interface CarItem {
+  name: string;
+  color: string;
   id: number;
-  title: string;
-  description: string;
-  price: number;
-  discountPercentage: number;
-  rating: number;
-  stock: number;
-  brand: string;
-  category: string;
-  thumbnail: string;
-  images: string[];
-  amount?: number;
-  totalPrice?: number;
-  inBasket?: boolean;
+}
+
+export interface SpeedData {
+  velocity: string;
+  distance: string;
 }
 
 export const enum PageIds {
@@ -20,3 +14,21 @@ export const enum PageIds {
   WinnersPage = '#winners-page',
   ErrorPage = '#erorr-page',
 }
+
+export const carsBrand: Array<string> = [
+  'Jaguar',
+  'Aston Martin',
+  'Alpine',
+  'Bentley',
+  'Cadillac',
+  'Chery',
+  'Chevrolet',
+  'Chrysler',
+  'Datsun',
+  'Dodge',
+  'Ford',
+  'Mersedes',
+  'Audi',
+  'Ferrari',
+  'Feat',
+];

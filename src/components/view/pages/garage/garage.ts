@@ -1,18 +1,18 @@
 import PageGrid from '../../grid/page-grid';
-import Car from './car/car';
+// import Car from './car/car';
 import Console from './console/console';
 import Header from '../../header/header';
 import Footer from '../../footer/footer';
 
 export default class Garage {
-  car: Car;
+  // car: Car;
   console: Console;
   PageGrid: PageGrid;
   header: Header;
   footer: Footer;
 
   constructor() {
-    this.car = new Car();
+    // this.car = new Car();
     this.console = new Console();
     this.PageGrid = new PageGrid();
     this.header = new Header();
@@ -28,11 +28,15 @@ export default class Garage {
 
     const garageTitle = <HTMLElement>document.createElement('div');
     garageTitle.className = 'garage__title';
-    garageTitle.textContent = 'Garage (0)';
+
+    const garageTotalCount = <HTMLElement>document.createElement('div');
+    garageTotalCount.className = 'garage__total-count';
+    garageTotalCount.textContent = 'Garage (0)';
 
     const garagePagination = <HTMLElement>document.createElement('div');
     garagePagination.className = 'garage__pagination';
     garagePagination.textContent = 'Page #1';
+    garageTitle.appendChild(garageTotalCount);
     garageTitle.appendChild(garagePagination);
 
     const garageCars = <HTMLElement>document.createElement('div');
@@ -66,7 +70,7 @@ export default class Garage {
     this.garageGrid();
     this.header.draw();
     this.footer.draw();
-    this.car.draw();
+    // this.car.draw();
     this.console.draw();
   }
 }

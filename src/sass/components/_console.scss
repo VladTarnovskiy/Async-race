@@ -17,6 +17,8 @@
             background-color: $white-color;
             border-radius: 3px;
             margin-right: 5px;
+            font-size: 2rem;
+            box-sizing: border-box;
         }
 
         .color__input {
@@ -29,7 +31,7 @@
         .color__button {
             height: 26px;
             width: 65px;
-            padding-top: 6px;
+            padding-top: 4px;
             margin-left: 15px;
             font-size: 1.3rem;
         }
@@ -48,6 +50,22 @@
             height: 26px;
             padding-top: 6px;
             width: 80px;
+        }
+
+        .button_race {
+            padding-bottom: 30px;
+            padding-top: 0;
+
+            .button_race-icon {
+                background-image: url(../assets/icon.ico);
+                background-repeat: no-repeat;
+                height: 20px;
+                width: 20px;
+                margin-left: 5px;
+                background-position: center;
+                background-size: contain;
+                display: inline-block;
+            }
         }
 
         .button_race {}

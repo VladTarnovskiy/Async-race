@@ -12,10 +12,29 @@
 
         .but_link {
             height: 40px;
-            width: 100px;
+            width: 130px;
             font-size: 1.8rem;
-            padding-top: 9px;
+            padding-top: 8px;
             margin: 10px;
+            display: inline-block;
+            box-shadow: 0 0 10px $red-color, 0 0 20px $red-color, 0 0 30px $red-color, 0 0 40px $red-color;
+
+
+            .but_garage-icon,
+            .but_winners-icon {
+                background-image: url(../assets/garage.png);
+                background-repeat: no-repeat;
+                height: 24px;
+                width: 24px;
+                margin-left: 5px;
+                margin-bottom: -6px;
+                background-position: center;
+                display: inline-block;
+            }
+
+            .but_winners-icon {
+                background-image: url(../assets/wreath.png);
+            }
         }
     }
 
