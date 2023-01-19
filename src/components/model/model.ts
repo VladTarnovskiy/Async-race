@@ -1,31 +1,31 @@
 import AppView from '../view/appView';
 import Car from '../view/pages/garage/car/car';
-import { CarItem, carsBrand, SpeedData } from '../types/types';
+import { CarItem, SpeedData } from '../types/types';
+import { animation, urlBase } from './store';
+import { getCars, startCar, stopCar, createCar, getCarId, removeCar, driveCar, getUpdateCar } from './api';
+import { getRandomColor, getRandomNum, carsBrand } from './helpers';
 
 export class Model extends AppView {
   car: Car;
-  urlBase = 'http://127.0.0.1:3000';
   page = 1;
   garageTotalCar = 0;
   selectCarId = 0;
   updateFlag = false;
-  carsBrand: Array<string>;
 
   constructor() {
     super();
     this.car = new Car();
-    this.carsBrand = carsBrand;
   }
 
-  async getAllCar(page: number, limit = 7): Promise<void> {
+  async drawCars(page: number): Promise<void> {
     const garage = <HTMLElement>document.querySelector('.garage__cars');
     garage.replaceChildren();
-    const response = await fetch(`${this.urlBase}/garage?_page=${page}&_limit=${limit}`);
-    const data = await response.json();
+    const carsData = await getCars(page);
+    const data: Array<CarItem> = await carsData.json();
     data.forEach((item: CarItem) => {
       this.car.draw(item);
     });
-    const count = response.headers.get('X-Total-Count');
+    const count = carsData.headers.get('X-Total-Count');
     const carTotalCount = <HTMLElement>document.querySelector('.garage__total-count');
     const carPagination = <HTMLElement>document.querySelector('.garage__pagination');
     carTotalCount.textContent = `Garage (${count})`;
@@ -34,10 +34,11 @@ export class Model extends AppView {
     this.getCarForManage();
   }
 
-  async getCarId(id: number): Promise<CarItem> {
-    const response = await fetch(`${this.urlBase}/garage/${id}`);
-    const data = await response.json();
-    return data;
+  async raceCar(): Promise<void> {
+    const car = document.querySelectorAll<HTMLElement>('.car');
+    car.forEach((item) => {
+      this.startDrive(Number(item.dataset.id), item);
+    });
   }
 
   private getCarForManage(): void {
@@ -53,14 +54,15 @@ export class Model extends AppView {
               this.getDataForUpdateCar(carId);
               break;
             case 'car__but_remove':
-              this.removeCar(carId);
-              this.getAllCar(this.page);
+              removeCar(carId);
+              this.drawCars(this.page);
               break;
             case 'car__but_drive':
-              this.startCar(carId, item);
+              this.startDrive(carId, item);
               break;
             case 'car__but_stop':
-              this.stopCar(carId);
+              stopCar(carId);
+              this.stopDriveOneCar(carId, item);
               break;
           }
         }
@@ -68,33 +70,10 @@ export class Model extends AppView {
     });
   }
 
-  async createCar(car: { name: string; color: string }) {
-    await fetch(`${this.urlBase}/garage`, {
-      method: 'POST',
-      body: JSON.stringify(car),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    // this.getAllCar(this.page);
-  }
-
   async updateCar(car: { name: string; color: string }, id: number) {
-    await fetch(`${this.urlBase}/garage/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(car),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    await this.getAllCar(this.page);
+    await getUpdateCar(car, id);
+    await this.drawCars(this.page);
     this.updateFlag = false;
-  }
-
-  async removeCar(id: number) {
-    await fetch(`${this.urlBase}/garage/${id}`, {
-      method: 'DELETE',
-    });
   }
 
   getDataForCreateCar(): void {
@@ -108,12 +87,12 @@ export class Model extends AppView {
       color: `${colorCar}`,
     };
 
-    this.createCar(car);
-    this.getAllCar(this.page);
+    createCar(car);
+    this.drawCars(this.page);
   }
 
   async getDataForUpdateCar(id: number): Promise<void> {
-    const choosingCar: CarItem = await this.getCarId(id);
+    const choosingCar: CarItem = await getCarId(id);
     const brandName = <HTMLInputElement>document.querySelector('.brand__display_update');
     const colorName = <HTMLInputElement>document.querySelector('.color__input_update');
     const butsSelect = document.querySelectorAll<HTMLElement>('.car__but_select');
@@ -132,65 +111,75 @@ export class Model extends AppView {
     });
   }
 
-  getRandomColor(): string {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
-
-  getRandomNum(): number {
-    return Math.floor(Math.random() * 7);
-  }
-
   generateCars() {
     for (let i = 1; i <= 100; i++) {
       const car = {
-        name: `${this.carsBrand[this.getRandomNum()]}`,
-        color: `${this.getRandomColor()}`,
+        name: `${carsBrand[getRandomNum()]}`,
+        color: `${getRandomColor()}`,
       };
-      this.createCar(car);
+      createCar(car);
     }
     setTimeout(() => {
-      this.getAllCar(this.page);
+      this.drawCars(this.page);
     }, 1000);
   }
 
-  async resetCars() {
-    const response = await fetch(`${this.urlBase}/garage`);
-    const data = await response.json();
-    data.forEach((item: CarItem) => {
-      this.removeCar(item.id);
-    });
-    setTimeout(() => {
-      this.getAllCar(this.page);
-    }, 1000);
-  }
-
-  async startCar(id: number, target: HTMLElement) {
+  async startDrive(id: number, target: HTMLElement): Promise<void> {
     const car = <HTMLElement>target.querySelector('.car__img');
-    const response = await fetch(`${this.urlBase}/engine?id=${id}&status=started`, {
-      method: 'PATCH',
-    });
-    const data: SpeedData = await response.json();
-    let move = 10;
-    setInterval(() => {
-      car.style.transform = `translateX(${move}px)`;
-      move += 10;
-    }, Number(data.distance) / Number(data.velocity) / 50);
-    // if(car.offsetLeft === '500px'){
+    const road = <HTMLElement>target.querySelector('.car__road');
+    const { velocity, distance }: SpeedData = await startCar(id);
+    const timex = Math.floor(Number(distance) / Number(velocity) / 1300);
+    const roadWidth = road.clientWidth;
+    const success: { success: boolean } = await driveCar(id);
+    const state: {
+      id: number;
+    } = { id: 1 };
+    let done = false;
+    let step = 0;
+    car.style.left = `0px`;
 
-    // }
-    // console.log(data.velosity);
+    const move = () => {
+      const carCoord = window.getComputedStyle(car);
+      const matrix = new WebKitCSSMatrix(carCoord.transform);
+      if (success.success === false || Math.ceil(matrix.m41) >= roadWidth - 130) {
+        window.cancelAnimationFrame(animation[id].id);
+        car.style.left = `${roadWidth - 100}px`;
+        step = 0;
+        done = true;
+      }
+      step += timex;
+      car.style.transform = `translateX(${step}px)`;
+      if (done === false) {
+        state.id = window.requestAnimationFrame(move);
+      }
+    };
+
+    state.id = window.requestAnimationFrame(move);
+    animation[id] = state;
   }
 
-  async stopCar(id: number) {
-    const response = await fetch(`${this.urlBase}/engine?id=${id}&status=stopped`, {
-      method: 'PATCH',
+  async stopDriveAll(): Promise<void> {
+    const carsData = await getCars(this.page);
+    const data: Array<CarItem> = await carsData.json();
+    data.forEach((item: CarItem) => {
+      // startCar(item.id);
+      window.cancelAnimationFrame(animation[item.id].id);
+      stopCar(item.id);
     });
-    const data = await response.json();
-    console.log(data);
+
+    const car = document.querySelectorAll<HTMLElement>('.car__img');
+    car.forEach((item) => {
+      item.style.transform = 'translateX(0px)';
+      item.style.left = `0px`;
+    });
+  }
+
+  async stopDriveOneCar(id: number, target: HTMLElement): Promise<void> {
+    window.cancelAnimationFrame(animation[id].id);
+    stopCar(id);
+    const car = <HTMLElement>target.querySelector('.car__img');
+
+    car.style.transform = 'translateX(0px)';
+    car.style.left = `0px`;
   }
 }

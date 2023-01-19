@@ -68,6 +68,12 @@
                 @extend %transition;
             }
 
+            .car__img.stop {
+                right: 0;
+
+                left: unset;
+            }
+
             .car__flag {
                 position: absolute;
                 right: 100px;

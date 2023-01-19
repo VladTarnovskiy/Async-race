@@ -14,21 +14,3 @@ export const enum PageIds {
   WinnersPage = '#winners-page',
   ErrorPage = '#erorr-page',
 }
-
-export const carsBrand: Array<string> = [
-  'Jaguar',
-  'Aston Martin',
-  'Alpine',
-  'Bentley',
-  'Cadillac',
-  'Chery',
-  'Chevrolet',
-  'Chrysler',
-  'Datsun',
-  'Dodge',
-  'Ford',
-  'Mersedes',
-  'Audi',
-  'Ferrari',
-  'Feat',
-];

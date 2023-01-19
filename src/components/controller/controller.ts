@@ -20,7 +20,7 @@ class AppController extends Model {
       this.getCreateCar();
       this.garageNextPage();
       this.garagePrevPage();
-      this.getAllCar(this.page);
+      this.drawCars(this.page);
       this.getUpdateCar();
       this.getGenerateCars();
       this.getResetCars();
@@ -47,7 +47,7 @@ class AppController extends Model {
   private getRaceCar(): void {
     const raceButton = <HTMLElement>document.querySelector('.button_race');
     raceButton.addEventListener('click', () => {
-      this.getAllCar(this.page);
+      this.raceCar();
     });
   }
 
@@ -70,7 +70,7 @@ class AppController extends Model {
     butPrevPage.addEventListener('click', () => {
       if (this.page > 1) {
         this.page -= 1;
-        this.getAllCar(this.page);
+        this.drawCars(this.page);
       }
     });
   }
@@ -81,7 +81,7 @@ class AppController extends Model {
       if (Math.ceil(this.garageTotalCar / 7 / this.page) > 1) {
         console.log(Math.ceil(this.garageTotalCar / 7));
         this.page += 1;
-        this.getAllCar(this.page);
+        this.drawCars(this.page);
       }
     });
   }
@@ -116,7 +116,7 @@ class AppController extends Model {
   private getResetCars(): void {
     const butReset = <HTMLElement>document.querySelector('.button_reset');
     butReset.addEventListener('click', () => {
-      this.resetCars();
+      this.stopDriveAll();
     });
   }
 
