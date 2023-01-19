@@ -88,3 +88,16 @@
         }
     }
 }
+
+.button.but-active {
+    background-color: $orange-color;
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+button.but-disabled {
+    background-color: grey;
+    color: $black-color;
+    transform: scale(0.95);
+    cursor: auto;
+}

@@ -45,18 +45,6 @@ export const createCar = async (car: { name: string; color: string }) => {
   });
 };
 
-// export const updateCar = async (car: { name: string; color: string }, id: number) => {
-//   await fetch(`${urlBase}/garage/${id}`, {
-//     method: 'PUT',
-//     body: JSON.stringify(car),
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//   });
-//   await this.drawCars(this.page);
-//   this.updateFlag = false;
-// };
-
 export const driveCar = async (id: number): Promise<{ success: boolean }> => {
   const response = await fetch(`${urlBase}/engine?id=${id}&status=status=drive`, {
     method: 'PATCH',

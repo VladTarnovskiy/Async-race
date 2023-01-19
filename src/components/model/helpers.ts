@@ -8,7 +8,7 @@ export const getRandomColor = (): string => {
 };
 
 export const getRandomNum = (): number => {
-  return Math.floor(Math.random() * 7);
+  return Math.floor(Math.random() * 15);
 };
 
 export const carsBrand: Array<string> = [

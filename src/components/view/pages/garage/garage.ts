@@ -53,6 +53,10 @@ export default class Garage {
     buttonNextPage.className = 'button pages__but page__but_next';
     buttonNextPage.textContent = 'Next >';
 
+    const winMessage = <HTMLElement>document.createElement('div');
+    winMessage.className = 'win-message';
+    winMessage.textContent = 'Geer tty 333344';
+
     garagePages.appendChild(buttonPrevPage);
     garagePages.appendChild(buttonNextPage);
 
@@ -63,6 +67,7 @@ export default class Garage {
     const main = <HTMLElement>document.querySelector('main');
     main.appendChild(consoleSection);
     main.appendChild(garageSection);
+    main.appendChild(winMessage);
   }
 
   draw(): void {

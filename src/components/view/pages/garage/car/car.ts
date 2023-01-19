@@ -38,7 +38,7 @@ export default class Car {
     buttonCarStart.textContent = 'A';
 
     const buttonCarStop = <HTMLElement>document.createElement('button');
-    buttonCarStop.className = 'button car__but-drive car__but_stop';
+    buttonCarStop.className = 'button car__but-drive car__but_stop but-disabled';
     buttonCarStop.textContent = 'B';
 
     blockDrive.appendChild(buttonCarStart);

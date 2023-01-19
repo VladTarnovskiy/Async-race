@@ -1,8 +1,9 @@
 import AppView from '../view/appView';
 import Car from '../view/pages/garage/car/car';
 import { CarItem, SpeedData } from '../types/types';
-import { animation, urlBase } from './store';
-import { getCars, startCar, stopCar, createCar, getCarId, removeCar, driveCar, getUpdateCar } from './api';
+import { animation } from './store';
+import { getCars, startCar, stopCar, createCar, getCarId, removeCar, driveCar, getUpdateCar } from './apiCars';
+// import {  } from './apiWinners';
 import { getRandomColor, getRandomNum, carsBrand } from './helpers';
 
 export class Model extends AppView {
@@ -11,6 +12,7 @@ export class Model extends AppView {
   garageTotalCar = 0;
   selectCarId = 0;
   updateFlag = false;
+  firstWinnerFlag = false;
 
   constructor() {
     super();
@@ -125,49 +127,93 @@ export class Model extends AppView {
   }
 
   async startDrive(id: number, target: HTMLElement): Promise<void> {
-    const car = <HTMLElement>target.querySelector('.car__img');
-    const road = <HTMLElement>target.querySelector('.car__road');
-    const { velocity, distance }: SpeedData = await startCar(id);
-    const timex = Math.floor(Number(distance) / Number(velocity) / 1300);
-    const roadWidth = road.clientWidth;
-    const success: { success: boolean } = await driveCar(id);
-    const state: {
-      id: number;
-    } = { id: 1 };
-    let done = false;
-    let step = 0;
-    car.style.left = `0px`;
+    const butStart = <HTMLElement>target.querySelector('.car__but_drive');
+    const butStop = <HTMLElement>target.querySelector('.car__but_stop');
 
-    const move = () => {
-      const carCoord = window.getComputedStyle(car);
-      const matrix = new WebKitCSSMatrix(carCoord.transform);
-      if (success.success === false || Math.ceil(matrix.m41) >= roadWidth - 130) {
-        window.cancelAnimationFrame(animation[id].id);
-        car.style.left = `${roadWidth - 100}px`;
-        step = 0;
-        done = true;
-      }
-      step += timex;
-      car.style.transform = `translateX(${step}px)`;
-      if (done === false) {
-        state.id = window.requestAnimationFrame(move);
-      }
-    };
+    if (!butStart.classList.contains('but-active') && !butStart.classList.contains('but-disabled')) {
+      const car = <HTMLElement>target.querySelector('.car__img');
+      const road = <HTMLElement>target.querySelector('.car__road');
+      const winMessage = <HTMLElement>document.querySelector('.win-message');
+      const { velocity, distance }: SpeedData = await startCar(id);
+      const winCar = await getCarId(id);
+      const timex = Math.floor(Number(distance) / Number(velocity) / 1300);
+      const roadWidth = road.clientWidth;
+      const success: { success: boolean } = await driveCar(id);
+      let done = false;
+      let step = 0;
+      const state: {
+        id: number;
+      } = { id: 1 };
+      console.log('click');
+      butStart.classList.add('but-active');
+      butStop.classList.remove('but-disabled');
+      car.style.left = `0px`;
 
-    state.id = window.requestAnimationFrame(move);
-    animation[id] = state;
+      const timeNow = new Date().getTime();
+
+      const move = () => {
+        const carCoord = window.getComputedStyle(car);
+        const matrix = new WebKitCSSMatrix(carCoord.transform);
+        if (success.success === false || Math.ceil(matrix.m41) >= roadWidth - 130) {
+          if (this.firstWinnerFlag === false) {
+            // clearInterval(timer);
+            const timeThen = new Date().getTime();
+            const timer = (timeThen - timeNow) / 1000;
+            winMessage.style.display = 'block';
+            winMessage.textContent = `${winCar.name} won first time (${timer}s)`;
+            setTimeout(() => {
+              winMessage.style.display = 'none';
+            }, 3000);
+            this.firstWinnerFlag = true;
+          }
+
+          window.cancelAnimationFrame(animation[id].id);
+          // car.style.left = `${roadWidth - 100}px`;
+          // step = 0;
+          //FFFFFFFFFIIIIIIIIIIIXXXXXXXX NEED
+          done = true;
+
+          butStart.classList.add('but-disabled');
+          butStart.classList.remove('but-active');
+          butStop.classList.remove('but-disabled');
+        }
+        step += timex;
+        car.style.transform = `translateX(${step}px)`;
+        if (done === false) {
+          state.id = window.requestAnimationFrame(move);
+        }
+      };
+
+      state.id = window.requestAnimationFrame(move);
+      animation[id] = state;
+    }
   }
 
   async stopDriveAll(): Promise<void> {
     const carsData = await getCars(this.page);
     const data: Array<CarItem> = await carsData.json();
-    data.forEach((item: CarItem) => {
-      // startCar(item.id);
-      window.cancelAnimationFrame(animation[item.id].id);
-      stopCar(item.id);
+    const car = document.querySelectorAll<HTMLElement>('.car__img');
+    const butsStart = document.querySelectorAll<HTMLElement>('.car__but_drive');
+    const butsStop = document.querySelectorAll<HTMLElement>('.car__but_stop');
+    this.firstWinnerFlag = false;
+
+    butsStart.forEach((item) => {
+      item.classList.remove('but-active');
+      item.classList.remove('but-disabled');
     });
 
-    const car = document.querySelectorAll<HTMLElement>('.car__img');
+    butsStop.forEach((item) => {
+      item.classList.add('but-disabled');
+      item.classList.remove('but-active');
+    });
+
+    data.forEach((item: CarItem) => {
+      // startCar(item.id);
+      stopCar(item.id);
+
+      window.cancelAnimationFrame(animation[item.id].id);
+    });
+
     car.forEach((item) => {
       item.style.transform = 'translateX(0px)';
       item.style.left = `0px`;
@@ -175,10 +221,14 @@ export class Model extends AppView {
   }
 
   async stopDriveOneCar(id: number, target: HTMLElement): Promise<void> {
+    const car = <HTMLElement>target.querySelector('.car__img');
+    const butStart = <HTMLElement>target.querySelector('.car__but_drive');
+    const butStop = <HTMLElement>target.querySelector('.car__but_stop');
     window.cancelAnimationFrame(animation[id].id);
     stopCar(id);
-    const car = <HTMLElement>target.querySelector('.car__img');
-
+    butStart.classList.remove('but-disabled');
+    butStart.classList.remove('but-active');
+    butStop.classList.add('but-disabled');
     car.style.transform = 'translateX(0px)';
     car.style.left = `0px`;
   }

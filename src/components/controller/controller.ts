@@ -79,7 +79,6 @@ class AppController extends Model {
     const butNextPage = <HTMLElement>document.querySelector('.page__but_next');
     butNextPage.addEventListener('click', () => {
       if (Math.ceil(this.garageTotalCar / 7 / this.page) > 1) {
-        console.log(Math.ceil(this.garageTotalCar / 7));
         this.page += 1;
         this.drawCars(this.page);
       }
@@ -119,18 +118,6 @@ class AppController extends Model {
       this.stopDriveAll();
     });
   }
-
-  // private getGoCar(): void {
-  //   const butDrive = <HTMLElement>document.querySelector('.car__drive');
-  //   butDrive.addEventListener('click', (e) => {
-  //     const target = <HTMLElement>e.target;
-  //     if (target.classList.contains('car__but-drive')) {
-  //       this.startCar();
-  //     } else if (target.classList.contains('car__but-stop')) {
-  //       this.stopCar();
-  //     }
-  //   });
-  // }
 
   run(): void {
     this.enableRouteChange();
