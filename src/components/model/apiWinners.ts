@@ -1,5 +1,5 @@
 import { urlBase } from './store';
-import { Winner } from '../types/types';
+import { Winner, WinnerUpdate } from '../types/types';
 
 export const getWinner = async (id: number): Promise<Winner> => {
   const response = await fetch(`${urlBase}/winners/${id}`);
@@ -9,11 +9,11 @@ export const getWinner = async (id: number): Promise<Winner> => {
 
 export const getWinners = async (
   page: number,
-  limit = 7,
   sort?: string | null,
-  order?: string | null
+  order?: string | null,
+  limit = 7
 ): Promise<Response> => {
-  return await fetch(`${urlBase}/winners?_page=${page}&_limit=${limit}${sort}${order}`);
+  return await fetch(`${urlBase}/winners?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}`);
   // &_sort=${limit}&_order=${limit}
 };
 
@@ -37,7 +37,7 @@ export const deleteWinner = async (id: number): Promise<void> => {
   await fetch(`${urlBase}/winners/${id}`, { method: 'DELETE' });
 };
 
-export const updateWinner = async (id: number, body: Winner): Promise<void> => {
+export const updateWinner = async (id: number, body: WinnerUpdate): Promise<void> => {
   await fetch(`${urlBase}/winners/${id}`, {
     method: 'PUT',
     body: JSON.stringify(body),

@@ -21,6 +21,11 @@ export type Winner = {
   wins: number;
 };
 
+export type WinnerUpdate = {
+  time: number;
+  wins: number;
+};
+
 export type Winners = {
   items: Array<Winner>;
 };
@@ -32,3 +37,9 @@ export type ViewWinner = {
   wins: number;
   time: number;
 };
+
+export const enum WinnersSort {
+  id = 'table__header_number',
+  time = 'table__header_time',
+  wins = 'table__header_wins',
+}

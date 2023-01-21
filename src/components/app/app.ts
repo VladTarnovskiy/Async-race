@@ -1,13 +1,14 @@
-import AppController from '../controller/controller';
+// import AppController from '../controller/controller';
+import Router from '../router/router';
 
 class App {
-  controller: AppController;
+  router: Router;
   constructor() {
-    this.controller = new AppController();
+    this.router = new Router();
   }
 
   run(): void {
-    this.controller.run();
+    this.router.run();
   }
 }
 

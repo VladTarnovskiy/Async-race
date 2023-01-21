@@ -8,9 +8,14 @@ export default class Result {
     const winnersTableHeader = <HTMLElement>document.createElement('div');
     winnersTableHeader.className = 'table__header';
 
+    const sortIndicator = <HTMLElement>document.createElement('span');
+    sortIndicator.className = 'sort_indicator';
+    sortIndicator.textContent = '↑';
+
     const headerNumber = <HTMLElement>document.createElement('div');
-    headerNumber.className = 'table__header-item table__header_number';
+    headerNumber.className = 'table__header-item table__header_number table__header_sort';
     headerNumber.textContent = '№';
+    headerNumber.appendChild(sortIndicator);
 
     const headerCar = <HTMLElement>document.createElement('div');
     headerCar.className = 'table__header-item table__header_car';
@@ -21,8 +26,9 @@ export default class Result {
     headerName.textContent = 'Name';
 
     const headerWins = <HTMLElement>document.createElement('div');
-    headerWins.className = 'table__header-item table__header_wins';
+    headerWins.className = 'table__header-item table__header_wins table__header_sort';
     headerWins.textContent = 'Wins';
+    headerWins.appendChild(sortIndicator.cloneNode(true));
 
     const headerWinsIcon = <HTMLElement>document.createElement('span');
     headerWinsIcon.className = 'table__header_wins-icon';
@@ -30,8 +36,9 @@ export default class Result {
     headerWins.appendChild(headerWinsIcon);
 
     const headerTime = <HTMLElement>document.createElement('div');
-    headerTime.className = 'table__header-item table__header_time';
+    headerTime.className = 'table__header-item table__header_time table__header_sort';
     headerTime.textContent = 'Best time';
+    headerTime.appendChild(sortIndicator.cloneNode(true));
 
     const headerTimeIcon = <HTMLElement>document.createElement('span');
     headerTimeIcon.className = 'table__header_time-icon';

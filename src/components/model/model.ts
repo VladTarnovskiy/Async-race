@@ -1,7 +1,7 @@
 import AppView from '../view/appView';
 import Car from '../view/pages/garage/car/car';
 import CarWinner from '../view/pages/basket/car-winner/car-winner';
-import { CarItem, SpeedData, ViewWinner, Winner } from '../types/types';
+import { CarItem, SpeedData, ViewWinner, Winner, WinnerUpdate, WinnersSort } from '../types/types';
 import { animation } from './store';
 import { getCars, startCar, stopCar, createCar, getCarId, removeCar, driveCar, getUpdateCar } from './apiCars';
 import { createWinner, deleteWinner, getWinner, getWinnerStatus, getWinners, updateWinner } from './apiWinners';
@@ -19,6 +19,9 @@ export class Model extends AppView {
   selectCarId = 0;
   updateFlag = false;
   firstWinnerFlag = false;
+  oreder = '';
+  sortWays = '';
+  sortItem = false;
 
   constructor() {
     super();
@@ -41,14 +44,14 @@ export class Model extends AppView {
   }
 
   async raceCar(): Promise<void> {
-    const car = document.querySelectorAll<HTMLElement>('.car');
+    const car = selectors.getQuerySelectorAll('.car');
     car.forEach((item) => {
       this.startDrive(Number(item.dataset.id), item);
     });
   }
 
   private getCarForManage(): void {
-    const car = document.querySelectorAll<HTMLElement>('.car');
+    const car = selectors.getQuerySelectorAll('.car');
     car.forEach((item) => {
       item.addEventListener('click', (e) => {
         const target = <HTMLElement>e.target;
@@ -99,7 +102,7 @@ export class Model extends AppView {
     const choosingCar: CarItem = await getCarId(id);
     const brandName = selectors.getBrandNameUpdate();
     const colorName = selectors.getColorNameUpdate();
-    const butsSelect = document.querySelectorAll<HTMLElement>('.car__but_select');
+    const butsSelect = selectors.getQuerySelectorAll('.car__but_select');
     brandName.value = choosingCar.name;
     brandName.style.border = `3px ${choosingCar.color} solid`;
     colorName.value = choosingCar.color;
@@ -129,24 +132,24 @@ export class Model extends AppView {
   }
 
   async startDrive(id: number, target: HTMLElement): Promise<void> {
-    const butStart = <HTMLElement>target.querySelector('.car__but_drive');
-    const butStop = <HTMLElement>target.querySelector('.car__but_stop');
+    const butStart = selectors.getTargetQuerySelector(target, '.car__but_drive');
+    const butStop = selectors.getTargetQuerySelector(target, '.car__but_stop');
 
     if (!butStart.classList.contains('but-active') && !butStart.classList.contains('but-disabled')) {
-      const car = <HTMLElement>target.querySelector('.car__img');
-      const road = <HTMLElement>target.querySelector('.car__road');
+      const car = selectors.getTargetQuerySelector(target, '.car__img');
+      const road = selectors.getTargetQuerySelector(target, '.car__road');
       const winMessage = selectors.getWinMessage();
       const { velocity, distance }: SpeedData = await startCar(id);
       const winCar = await getCarId(id);
-      const timex = Math.floor(Number(distance) / Number(velocity) / 1300);
+      const timex = Math.floor(Number(distance) / Number(velocity) / 10);
       const roadWidth = road.clientWidth;
+      const speed = roadWidth / timex;
       const success: { success: boolean } = await driveCar(id);
       let done = false;
       let step = 0;
       const state: {
         id: number;
       } = { id: 1 };
-      console.log('click');
       butStart.classList.add('but-active');
       butStop.classList.remove('but-disabled');
       car.style.left = `0px`;
@@ -175,16 +178,13 @@ export class Model extends AppView {
           }
 
           window.cancelAnimationFrame(animation[id].id);
-          // car.style.left = `${roadWidth - 100}px`;
-          // step = 0;
-          //FFFFFFFFFIIIIIIIIIIIXXXXXXXX NEED
           done = true;
 
           butStart.classList.add('but-disabled');
           butStart.classList.remove('but-active');
           butStop.classList.remove('but-disabled');
         }
-        step += timex;
+        step += speed;
         car.style.transform = `translateX(${step}px)`;
         if (done === false) {
           state.id = window.requestAnimationFrame(move);
@@ -199,9 +199,9 @@ export class Model extends AppView {
   async stopDriveAll(): Promise<void> {
     const carsData = await getCars(this.page);
     const data: Array<CarItem> = await carsData.json();
-    const car = document.querySelectorAll<HTMLElement>('.car__img');
-    const butsStart = document.querySelectorAll<HTMLElement>('.car__but_drive');
-    const butsStop = document.querySelectorAll<HTMLElement>('.car__but_stop');
+    const car = selectors.getQuerySelectorAll('.car__img');
+    const butsStart = selectors.getQuerySelectorAll('.car__but_drive');
+    const butsStop = selectors.getQuerySelectorAll('.car__but_stop');
     this.firstWinnerFlag = false;
 
     butsStart.forEach((item) => {
@@ -215,7 +215,6 @@ export class Model extends AppView {
     });
 
     data.forEach((item: CarItem) => {
-      // startCar(item.id);
       stopCar(item.id);
 
       window.cancelAnimationFrame(animation[item.id].id);
@@ -223,28 +222,26 @@ export class Model extends AppView {
 
     car.forEach((item) => {
       item.style.transform = 'translateX(0px)';
-      item.style.left = `0px`;
     });
   }
 
   async stopDriveOneCar(id: number, target: HTMLElement): Promise<void> {
-    const car = <HTMLElement>target.querySelector('.car__img');
-    const butStart = <HTMLElement>target.querySelector('.car__but_drive');
-    const butStop = <HTMLElement>target.querySelector('.car__but_stop');
+    const car = selectors.getTargetQuerySelector(target, '.car__img');
+    const butStart = selectors.getTargetQuerySelector(target, '.car__but_drive');
+    const butStop = selectors.getTargetQuerySelector(target, '.car__but_stop');
     window.cancelAnimationFrame(animation[id].id);
     stopCar(id);
     butStart.classList.remove('but-disabled');
     butStart.classList.remove('but-active');
     butStop.classList.add('but-disabled');
     car.style.transform = 'translateX(0px)';
-    car.style.left = `0px`;
   }
 
   //WINNERS
-  async drawWinners(page: number): Promise<void> {
+  async drawWinners(page: number, sort?: string, order?: string): Promise<void> {
     selectors.getWinners().replaceChildren();
     let number = 1;
-    const response = await getWinners(page);
+    const response = await getWinners(this.winnerPage, sort, order);
     const dataWinners = await response.json();
     const count = await response.headers.get('X-Total-Count');
     this.winnersTotalCar = Number(count);
@@ -270,14 +267,62 @@ export class Model extends AppView {
     winners.forEach((item: Winner) => {
       if (item.id === dataWin.id) {
         const data = {
-          id: dataWin.id,
           time: dataWin.time < item.time ? dataWin.time : item.time,
-          wins: dataWin.wins + 1,
+          wins: item.wins + 1,
         };
         updateWinner(dataWin.id, data);
         return;
       }
     });
     createWinner(dataWin);
+  }
+
+  getSortWinners(target: HTMLElement): void {
+    if (target.classList.contains('table__header-item')) {
+      const className = target.classList[1];
+      switch (className) {
+        case WinnersSort.id:
+          this.drawWinners(this.winnerPage, 'id', this.getSortParams(target, 'id'));
+          break;
+        case WinnersSort.wins:
+          this.drawWinners(this.winnerPage, 'wins', this.getSortParams(target, 'wins'));
+          break;
+        case WinnersSort.time:
+          this.drawWinners(this.winnerPage, 'time', this.getSortParams(target, 'time'));
+          break;
+      }
+    }
+  }
+
+  getSortParams(target: HTMLElement, sort: string): string {
+    const sortElem = selectors.getQuerySelectorAll('.table__header-item');
+    let sortId = '';
+    sortElem.forEach((item) => {
+      item.classList.remove('increase');
+      item.classList.remove('decrease');
+    });
+    if (this.sortWays === '') {
+      this.sortWays = sort;
+    }
+    if (sort === this.sortWays) {
+      if (this.sortItem === false) {
+        this.sortItem = true;
+        target.classList.add('increase');
+        target.classList.remove('decrease');
+        sortId = 'ASC';
+      } else {
+        this.sortItem = false;
+        target.classList.remove('increase');
+        target.classList.add('decrease');
+        sortId = 'DESC';
+      }
+    } else {
+      this.sortItem = true;
+      this.sortWays = sort;
+      target.classList.add('increase');
+      target.classList.remove('decrease');
+      sortId = 'ASC';
+    }
+    return sortId;
   }
 }

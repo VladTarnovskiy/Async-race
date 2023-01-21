@@ -1,4 +1,5 @@
 export default {
+  getTargetQuerySelector: (target: HTMLElement, query: string): HTMLElement => <HTMLElement>target.querySelector(query),
   body: (): HTMLElement => <HTMLElement>document.querySelector('body'),
   getCarElem: (): HTMLElement => <HTMLElement>document.querySelector('.car'),
   getRaceBtn: (): HTMLElement => <HTMLElement>document.querySelector('.button_race'),
@@ -21,4 +22,6 @@ export default {
   getWinners: (): HTMLElement => <HTMLElement>document.querySelector('.table__main'),
   getWinnersTotalCount: (): HTMLElement => <HTMLElement>document.querySelector('.winners__total-count'),
   getWinnersPagination: (): HTMLElement => <HTMLElement>document.querySelector('.winners__pagination'),
+  getQuerySelector: (query: string): HTMLElement => <HTMLElement>document.querySelector(query),
+  getQuerySelectorAll: (query: string): NodeListOf<HTMLElement> => document.querySelectorAll<HTMLElement>(query),
 };

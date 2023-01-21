@@ -1,54 +1,13 @@
-import AppView from '../view/appView';
 import { Model } from '../model/model';
 import { PageIds } from '../types/types';
 import selectors from '../model/selectors';
 
 class AppController extends Model {
-  view: AppView;
-
   constructor() {
     super();
-    this.view = new AppView();
   }
 
-  // start routing
-  renderNewPage(idPage: string): void {
-    selectors.body().replaceChildren();
-    if (idPage === PageIds.GaragePage || idPage === '') {
-      this.firstWinnerFlag = false;
-      this.view.drawMain();
-      this.getRaceCar();
-      this.getCreateCar();
-      this.garageNextPage();
-      this.garagePrevPage();
-      this.drawCars(this.page);
-      this.getUpdateCar();
-      this.getGenerateCars();
-      this.getResetCars();
-    } else if (idPage === PageIds.WinnersPage) {
-      this.view.drawBasket();
-      this.drawWinners(this.page);
-      this.winnersNextPage();
-      this.winnersPrevPage();
-    } else {
-      this.view.drawError();
-    }
-  }
-
-  private enableRouteChange(): void {
-    window.addEventListener('hashchange', () => {
-      const hash = window.location.hash.split('?')[0];
-      this.renderNewPage(hash);
-    });
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const hash = window.location.hash.split('?')[0];
-      this.renderNewPage(hash);
-    });
-  }
-  //endrouting
-
-  private getRaceCar(): void {
+  getRaceCar(): void {
     const raceButton = selectors.getRaceBtn();
     const resetButton = selectors.getResetBtn();
     selectors.getRaceBtn().addEventListener('click', () => {
@@ -60,7 +19,7 @@ class AppController extends Model {
     });
   }
 
-  private getCreateCar(): void {
+  getCreateCar(): void {
     const brandName = selectors.getBrandName();
     const colorName = selectors.getColorName();
     const createButton = selectors.getCreateBtn();
@@ -72,25 +31,45 @@ class AppController extends Model {
     });
   }
 
-  private garagePrevPage(): void {
+  garagePrevPage(page: string): void {
     selectors.getPrevBtn().addEventListener('click', () => {
-      if (this.page > 1) {
-        this.page -= 1;
-        this.drawCars(this.page);
+      switch (page) {
+        case PageIds.GaragePage:
+          if (this.page > 1) {
+            this.page -= 1;
+            this.drawCars(this.page);
+          }
+          break;
+        case PageIds.WinnersPage:
+          if (this.winnerPage > 1) {
+            this.winnerPage -= 1;
+            this.drawWinners(this.winnerPage);
+          }
+          break;
       }
     });
   }
 
-  private garageNextPage(): void {
+  garageNextPage(page: string): void {
     selectors.getNextBtn().addEventListener('click', () => {
-      if (Math.ceil(this.garageTotalCar / 7 / this.page) > 1) {
-        this.page += 1;
-        this.drawCars(this.page);
+      switch (page) {
+        case PageIds.GaragePage:
+          if (Math.ceil(this.garageTotalCar / 7 / this.page) > 1) {
+            this.page += 1;
+            this.drawCars(this.page);
+          }
+          break;
+        case PageIds.WinnersPage:
+          if (Math.ceil(this.winnersTotalCar / 7 / this.winnerPage) > 1) {
+            this.winnerPage += 1;
+            this.drawWinners(this.winnerPage);
+          }
+          break;
       }
     });
   }
 
-  private getUpdateCar(): void {
+  getUpdateCar(): void {
     const brandName = selectors.getBrandNameUpdate();
     const colorName = selectors.getColorNameUpdate();
     selectors.getUpdateBtn().addEventListener('click', () => {
@@ -108,13 +87,13 @@ class AppController extends Model {
     });
   }
 
-  private getGenerateCars(): void {
+  getGenerateCars(): void {
     selectors.getGenerateBtn().addEventListener('click', () => {
       this.generateCars();
     });
   }
 
-  private getResetCars(): void {
+  getResetCars(): void {
     selectors.getResetBtn().addEventListener('click', () => {
       selectors.getRaceBtn().classList.remove('but-disabled');
       selectors.getResetBtn().classList.remove('but-active');
@@ -122,27 +101,11 @@ class AppController extends Model {
     });
   }
 
-  private winnersPrevPage(): void {
-    selectors.getPrevBtn().addEventListener('click', () => {
-      if (this.winnerPage > 1) {
-        this.winnerPage -= 1;
-        this.drawWinners(this.winnerPage);
-      }
+  sortWinners(): void {
+    selectors.getQuerySelector('.table__header').addEventListener('click', (event) => {
+      const target = <HTMLElement>event.target;
+      this.getSortWinners(target);
     });
-  }
-
-  private winnersNextPage(): void {
-    selectors.getNextBtn().addEventListener('click', () => {
-      if (Math.ceil(this.winnersTotalCar / 7 / this.winnerPage) > 1) {
-        this.winnerPage += 1;
-        this.drawWinners(this.winnerPage);
-      }
-    });
-  }
-
-  run(): void {
-    this.enableRouteChange();
-    this.renderNewPage('#?');
   }
 }
 
