@@ -14,7 +14,6 @@ export const getWinners = async (
   limit = 7
 ): Promise<Response> => {
   return await fetch(`${urlBase}/winners?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}`);
-  // &_sort=${limit}&_order=${limit}
 };
 
 export const getWinnerStatus = async (id: number): Promise<number> => {

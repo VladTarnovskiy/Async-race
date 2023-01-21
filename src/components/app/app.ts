@@ -1,4 +1,3 @@
-// import AppController from '../controller/controller';
 import Router from '../router/router';
 
 class App {
