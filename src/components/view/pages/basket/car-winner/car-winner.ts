@@ -1,15 +1,17 @@
+import { ViewWinner } from '../../../../types/types';
+
 export default class CarWinner {
-  draw(): void {
+  draw(data: ViewWinner): void {
     const container = <HTMLElement>document.querySelector('.table__main');
 
     const winnersTableMain = <HTMLElement>document.createElement('div');
-    winnersTableMain.className = 'table__main';
+    winnersTableMain.className = 'winner';
 
     const mainNumber = <HTMLElement>document.createElement('div');
     mainNumber.className = 'table__main-item table__main_number';
-    mainNumber.textContent = '1';
+    mainNumber.textContent = `${data.id}`;
 
-    const carImg = `<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    const carImg = `<svg fill="${data.color}" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
     width="70px" height="70px" viewBox="0 0 324.018 324.017"
     xml:space="preserve">
     <g>
@@ -51,15 +53,15 @@ export default class CarWinner {
 
     const mainName = <HTMLElement>document.createElement('div');
     mainName.className = 'table__main-item table__main_name';
-    mainName.textContent = 'Mersedes';
+    mainName.textContent = `${data.name}`;
 
     const mainWins = <HTMLElement>document.createElement('div');
     mainWins.className = 'table__main-item table__main_wins';
-    mainWins.textContent = '3';
+    mainWins.textContent = `${data.wins}`;
 
     const mainTime = <HTMLElement>document.createElement('div');
     mainTime.className = 'table__main-item table__main_time';
-    mainTime.textContent = '01:13';
+    mainTime.textContent = `${data.time}`;
 
     winnersTableMain.appendChild(mainNumber);
     winnersTableMain.appendChild(mainCar);

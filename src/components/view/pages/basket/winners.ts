@@ -1,5 +1,5 @@
 import Result from './result/result';
-import CarWinner from './car-winner/car-winner';
+// import CarWinner from './car-winner/car-winner';
 import PageGrid from '../../grid/page-grid';
 import Header from '../../header/header';
 import Footer from '../../footer/footer';
@@ -9,14 +9,14 @@ export default class Winners {
   PageGrid: PageGrid;
   header: Header;
   footer: Footer;
-  carWinner: CarWinner;
+  // carWinner: CarWinner;
 
   constructor() {
     this.result = new Result();
     this.PageGrid = new PageGrid();
     this.header = new Header();
     this.footer = new Footer();
-    this.carWinner = new CarWinner();
+    // this.carWinner = new CarWinner();
   }
 
   winnersGrid() {
@@ -25,11 +25,15 @@ export default class Winners {
 
     const winnersTitle = <HTMLElement>document.createElement('div');
     winnersTitle.className = 'winners__title';
-    winnersTitle.textContent = 'Winners (0)';
+
+    const garageTotalCount = <HTMLElement>document.createElement('div');
+    garageTotalCount.className = 'winners__total-count';
+    garageTotalCount.textContent = 'Winners (0)';
 
     const winnersPagination = <HTMLElement>document.createElement('div');
     winnersPagination.className = 'winners__pagination';
     winnersPagination.textContent = 'Page #1';
+    winnersTitle.appendChild(garageTotalCount);
     winnersTitle.appendChild(winnersPagination);
 
     const winnersCars = <HTMLElement>document.createElement('div');
@@ -63,6 +67,6 @@ export default class Winners {
     this.footer.draw();
     this.winnersGrid();
     this.result.draw();
-    this.carWinner.draw();
+    // this.carWinner.draw();
   }
 }

@@ -1,17 +1,22 @@
-.table__main-item {
-    width: 182px;
-    border-right: 1px #302b2b solid;
-    position: relative;
-    box-sizing: border-box;
+.winner {
+    display: flex;
+    justify-content: space-between;
+    font-family: $main-font;
+    font-size: 2.5rem;
+    text-align: center;
+    background-color: rgba(190, 123, 123, 0.5);
 
-    .table__main_car-img {
-        position: absolute;
-        top: -20px;
-        left: 50%;
-        transform: translateX(-50%);
+    .table__main-item {
+        width: 182px;
+        border: 1px #302b2b solid;
+        position: relative;
+        box-sizing: border-box;
+
+        .table__main_car-img {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
     }
-}
-
-.table__main_time {
-    border: none;
 }

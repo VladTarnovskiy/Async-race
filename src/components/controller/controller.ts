@@ -1,6 +1,7 @@
 import AppView from '../view/appView';
 import { Model } from '../model/model';
 import { PageIds } from '../types/types';
+import selectors from '../model/selectors';
 
 class AppController extends Model {
   view: AppView;
@@ -12,9 +13,9 @@ class AppController extends Model {
 
   // start routing
   renderNewPage(idPage: string): void {
-    const currentPageHTML = <HTMLElement>document.querySelector('body');
-    currentPageHTML.replaceChildren();
+    selectors.body().replaceChildren();
     if (idPage === PageIds.GaragePage || idPage === '') {
+      this.firstWinnerFlag = false;
       this.view.drawMain();
       this.getRaceCar();
       this.getCreateCar();
@@ -26,6 +27,9 @@ class AppController extends Model {
       this.getResetCars();
     } else if (idPage === PageIds.WinnersPage) {
       this.view.drawBasket();
+      this.drawWinners(this.page);
+      this.winnersNextPage();
+      this.winnersPrevPage();
     } else {
       this.view.drawError();
     }
@@ -45,20 +49,23 @@ class AppController extends Model {
   //endrouting
 
   private getRaceCar(): void {
-    const raceButton = <HTMLElement>document.querySelector('.button_race');
-    raceButton.addEventListener('click', () => {
-      this.raceCar();
+    const raceButton = selectors.getRaceBtn();
+    const resetButton = selectors.getResetBtn();
+    selectors.getRaceBtn().addEventListener('click', () => {
+      if (!raceButton.classList.contains('but-disabled')) {
+        raceButton.classList.add('but-disabled');
+        resetButton.classList.add('but-active');
+        this.raceCar();
+      }
     });
   }
 
   private getCreateCar(): void {
-    const brandName = <HTMLInputElement>document.querySelector('.brand__display_create');
-    const colorName = <HTMLInputElement>document.querySelector('.color__input_create');
-    const createButton = <HTMLElement>document.querySelector('.color__button_create');
+    const brandName = selectors.getBrandName();
+    const colorName = selectors.getColorName();
+    const createButton = selectors.getCreateBtn();
     createButton.addEventListener('click', () => {
-      if (brandName.checkValidity()) {
-        this.getDataForCreateCar();
-      }
+      this.getDataForCreateCar();
     });
     colorName.addEventListener('input', () => {
       brandName.style.border = `3px ${colorName.value} solid`;
@@ -66,8 +73,7 @@ class AppController extends Model {
   }
 
   private garagePrevPage(): void {
-    const butPrevPage = <HTMLElement>document.querySelector('.page__but_prev');
-    butPrevPage.addEventListener('click', () => {
+    selectors.getPrevBtn().addEventListener('click', () => {
       if (this.page > 1) {
         this.page -= 1;
         this.drawCars(this.page);
@@ -76,8 +82,7 @@ class AppController extends Model {
   }
 
   private garageNextPage(): void {
-    const butNextPage = <HTMLElement>document.querySelector('.page__but_next');
-    butNextPage.addEventListener('click', () => {
+    selectors.getNextBtn().addEventListener('click', () => {
       if (Math.ceil(this.garageTotalCar / 7 / this.page) > 1) {
         this.page += 1;
         this.drawCars(this.page);
@@ -86,12 +91,10 @@ class AppController extends Model {
   }
 
   private getUpdateCar(): void {
-    const butUpdate = <HTMLElement>document.querySelector('.color__button_update');
-    const brandName = <HTMLInputElement>document.querySelector('.brand__display_update');
-    const colorName = <HTMLInputElement>document.querySelector('.color__input_update');
-
-    butUpdate.addEventListener('click', () => {
-      if (this.updateFlag === true && brandName.checkValidity()) {
+    const brandName = selectors.getBrandNameUpdate();
+    const colorName = selectors.getColorNameUpdate();
+    selectors.getUpdateBtn().addEventListener('click', () => {
+      if (this.updateFlag === true) {
         const car = {
           name: `${brandName.value}`,
           color: `${colorName.value}`,
@@ -106,16 +109,34 @@ class AppController extends Model {
   }
 
   private getGenerateCars(): void {
-    const butGenerate = <HTMLElement>document.querySelector('.button_generate');
-    butGenerate.addEventListener('click', () => {
+    selectors.getGenerateBtn().addEventListener('click', () => {
       this.generateCars();
     });
   }
 
   private getResetCars(): void {
-    const butReset = <HTMLElement>document.querySelector('.button_reset');
-    butReset.addEventListener('click', () => {
+    selectors.getResetBtn().addEventListener('click', () => {
+      selectors.getRaceBtn().classList.remove('but-disabled');
+      selectors.getResetBtn().classList.remove('but-active');
       this.stopDriveAll();
+    });
+  }
+
+  private winnersPrevPage(): void {
+    selectors.getPrevBtn().addEventListener('click', () => {
+      if (this.winnerPage > 1) {
+        this.winnerPage -= 1;
+        this.drawWinners(this.winnerPage);
+      }
+    });
+  }
+
+  private winnersNextPage(): void {
+    selectors.getNextBtn().addEventListener('click', () => {
+      if (Math.ceil(this.winnersTotalCar / 7 / this.winnerPage) > 1) {
+        this.winnerPage += 1;
+        this.drawWinners(this.winnerPage);
+      }
     });
   }
 

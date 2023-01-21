@@ -19,6 +19,7 @@ export default class Console {
 
     const colorButtonCreate = <HTMLElement>document.createElement('button');
     colorButtonCreate.className = 'button color__button color__button_create';
+    colorButtonCreate.setAttribute('type', 'button');
     colorButtonCreate.textContent = 'Create';
 
     colorItemCreate.appendChild(brandDisplayCreate);
@@ -40,6 +41,7 @@ export default class Console {
 
     const colorButtonUpdate = <HTMLElement>document.createElement('button');
     colorButtonUpdate.className = 'button color__button color__button_update';
+    colorButtonUpdate.setAttribute('type', 'button');
     colorButtonUpdate.textContent = 'Update';
 
     colorItemUpdate.appendChild(colorDisplayUpdate);

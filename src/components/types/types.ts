@@ -14,3 +14,21 @@ export const enum PageIds {
   WinnersPage = '#winners-page',
   ErrorPage = '#erorr-page',
 }
+
+export type Winner = {
+  id: number;
+  time: number;
+  wins: number;
+};
+
+export type Winners = {
+  items: Array<Winner>;
+};
+
+export type ViewWinner = {
+  id: number;
+  color: string;
+  name: string;
+  wins: number;
+  time: number;
+};

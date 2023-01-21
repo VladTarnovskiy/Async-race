@@ -13,6 +13,8 @@ export default class Car {
 
     const buttonSelect = <HTMLElement>document.createElement('button');
     buttonSelect.className = 'button car__but car__but_select';
+    buttonSelect.setAttribute('data-id', `${data.id}`);
+
     buttonSelect.textContent = 'Select';
 
     const buttonRemove = <HTMLElement>document.createElement('button');

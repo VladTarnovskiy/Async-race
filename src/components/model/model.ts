@@ -1,15 +1,21 @@
 import AppView from '../view/appView';
 import Car from '../view/pages/garage/car/car';
-import { CarItem, SpeedData } from '../types/types';
+import CarWinner from '../view/pages/basket/car-winner/car-winner';
+import { CarItem, SpeedData, ViewWinner, Winner } from '../types/types';
 import { animation } from './store';
 import { getCars, startCar, stopCar, createCar, getCarId, removeCar, driveCar, getUpdateCar } from './apiCars';
-// import {  } from './apiWinners';
+import { createWinner, deleteWinner, getWinner, getWinnerStatus, getWinners, updateWinner } from './apiWinners';
+import selectors from '../model/selectors';
 import { getRandomColor, getRandomNum, carsBrand } from './helpers';
+import { urlBase } from './store';
 
 export class Model extends AppView {
   car: Car;
+  carWinner: CarWinner;
   page = 1;
+  winnerPage = 1;
   garageTotalCar = 0;
+  winnersTotalCar = 0;
   selectCarId = 0;
   updateFlag = false;
   firstWinnerFlag = false;
@@ -17,21 +23,19 @@ export class Model extends AppView {
   constructor() {
     super();
     this.car = new Car();
+    this.carWinner = new CarWinner();
   }
 
   async drawCars(page: number): Promise<void> {
-    const garage = <HTMLElement>document.querySelector('.garage__cars');
-    garage.replaceChildren();
+    selectors.getGarage().replaceChildren();
     const carsData = await getCars(page);
     const data: Array<CarItem> = await carsData.json();
     data.forEach((item: CarItem) => {
       this.car.draw(item);
     });
     const count = carsData.headers.get('X-Total-Count');
-    const carTotalCount = <HTMLElement>document.querySelector('.garage__total-count');
-    const carPagination = <HTMLElement>document.querySelector('.garage__pagination');
-    carTotalCount.textContent = `Garage (${count})`;
-    carPagination.textContent = `Page #${page}`;
+    selectors.getGarageTotalCount().textContent = `Garage (${count})`;
+    selectors.getGaragePagination().textContent = `Page #${page}`;
     this.garageTotalCar = Number(count);
     this.getCarForManage();
   }
@@ -79,10 +83,8 @@ export class Model extends AppView {
   }
 
   getDataForCreateCar(): void {
-    const brandName = <HTMLInputElement>document.querySelector('.brand__display_create');
-    const colorName = <HTMLInputElement>document.querySelector('.color__input_create');
-    const brandCar = brandName.value;
-    const colorCar = colorName.value;
+    const brandCar = selectors.getBrandName().value;
+    const colorCar = selectors.getColorName().value;
 
     const car = {
       name: `${brandCar}`,
@@ -95,8 +97,8 @@ export class Model extends AppView {
 
   async getDataForUpdateCar(id: number): Promise<void> {
     const choosingCar: CarItem = await getCarId(id);
-    const brandName = <HTMLInputElement>document.querySelector('.brand__display_update');
-    const colorName = <HTMLInputElement>document.querySelector('.color__input_update');
+    const brandName = selectors.getBrandNameUpdate();
+    const colorName = selectors.getColorNameUpdate();
     const butsSelect = document.querySelectorAll<HTMLElement>('.car__but_select');
     brandName.value = choosingCar.name;
     brandName.style.border = `3px ${choosingCar.color} solid`;
@@ -108,8 +110,8 @@ export class Model extends AppView {
       item.classList.remove('active');
     });
 
-    butsSelect.forEach((item, index) => {
-      if (index + 1 === id) item.classList.add('active');
+    butsSelect.forEach((item) => {
+      if (Number(item.dataset.id) === id) item.classList.add('active');
     });
   }
 
@@ -133,7 +135,7 @@ export class Model extends AppView {
     if (!butStart.classList.contains('but-active') && !butStart.classList.contains('but-disabled')) {
       const car = <HTMLElement>target.querySelector('.car__img');
       const road = <HTMLElement>target.querySelector('.car__road');
-      const winMessage = <HTMLElement>document.querySelector('.win-message');
+      const winMessage = selectors.getWinMessage();
       const { velocity, distance }: SpeedData = await startCar(id);
       const winCar = await getCarId(id);
       const timex = Math.floor(Number(distance) / Number(velocity) / 1300);
@@ -156,15 +158,20 @@ export class Model extends AppView {
         const matrix = new WebKitCSSMatrix(carCoord.transform);
         if (success.success === false || Math.ceil(matrix.m41) >= roadWidth - 130) {
           if (this.firstWinnerFlag === false) {
-            // clearInterval(timer);
             const timeThen = new Date().getTime();
             const timer = (timeThen - timeNow) / 1000;
             winMessage.style.display = 'block';
-            winMessage.textContent = `${winCar.name} won first time (${timer}s)`;
+            winMessage.textContent = `${winCar.name} won first (${timer}s)`;
             setTimeout(() => {
               winMessage.style.display = 'none';
             }, 3000);
             this.firstWinnerFlag = true;
+            const winner = {
+              id: id,
+              time: timer,
+              wins: 1,
+            };
+            this.recordWinners(winner);
           }
 
           window.cancelAnimationFrame(animation[id].id);
@@ -231,5 +238,46 @@ export class Model extends AppView {
     butStop.classList.add('but-disabled');
     car.style.transform = 'translateX(0px)';
     car.style.left = `0px`;
+  }
+
+  //WINNERS
+  async drawWinners(page: number): Promise<void> {
+    selectors.getWinners().replaceChildren();
+    let number = 1;
+    const response = await getWinners(page);
+    const dataWinners = await response.json();
+    const count = await response.headers.get('X-Total-Count');
+    this.winnersTotalCar = Number(count);
+    dataWinners.forEach(async (item: Winner) => {
+      const car = await getCarId(item.id);
+      const data = {
+        id: number,
+        color: car.color,
+        name: car.name,
+        wins: item.wins,
+        time: item.time,
+      };
+      this.carWinner.draw(data);
+      number += 1;
+    });
+    selectors.getWinnersTotalCount().textContent = `Garage (${this.winnersTotalCar})`;
+    selectors.getWinnersPagination().textContent = `Page #${page}`;
+  }
+
+  async recordWinners(dataWin: Winner): Promise<void> {
+    const response = await fetch(`${urlBase}/winners`);
+    const winners = await response.json();
+    winners.forEach((item: Winner) => {
+      if (item.id === dataWin.id) {
+        const data = {
+          id: dataWin.id,
+          time: dataWin.time < item.time ? dataWin.time : item.time,
+          wins: dataWin.wins + 1,
+        };
+        updateWinner(dataWin.id, data);
+        return;
+      }
+    });
+    createWinner(dataWin);
   }
 }
