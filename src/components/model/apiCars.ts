@@ -1,4 +1,4 @@
-import { animation, urlBase } from './store';
+import { urlBase } from './store';
 import { SpeedData, CarItem } from '../types/types';
 
 export const getCars = async (page: number, limit = 7): Promise<Response> => {

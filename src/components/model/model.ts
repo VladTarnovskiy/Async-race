@@ -1,13 +1,12 @@
 import AppView from '../view/appView';
 import Car from '../view/pages/garage/car/car';
 import CarWinner from '../view/pages/basket/car-winner/car-winner';
-import { CarItem, SpeedData, Winner, WinnersSort, PageIds } from '../types/types';
-import { animation } from './store';
+import { CarItem, SpeedData, Winner, WinnersSort } from '../types/types';
 import { getCars, startCar, stopCar, createCar, getCarId, removeCar, driveCar, getUpdateCar } from './apiCars';
-import { createWinner, deleteWinner, getWinner, getWinners, updateWinner } from './apiWinners';
+import { createWinner, deleteWinner, getWinners, updateWinner } from './apiWinners';
 import selectors from '../model/selectors';
 import { getRandomColor, getRandomNum, carsBrand, carsModel } from './helpers';
-import { urlBase } from './store';
+import { urlBase, animation } from './store';
 
 export class Model extends AppView {
   car: Car;
