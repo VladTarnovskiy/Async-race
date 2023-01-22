@@ -63,7 +63,7 @@ class AppController extends Model {
           }
           break;
         case PageIds.WinnersPage:
-          if (Math.ceil(this.winnersTotalCar / 7 / this.winnerPage) > 1) {
+          if (Math.ceil(this.winnersTotalCar / 10 / this.winnerPage) > 1) {
             this.winnerPage += 1;
             this.drawWinners(this.winnerPage);
             localStorage.setItem('winnerPage', `${this.winnerPage}`);
