@@ -28,3 +28,21 @@ export const carsBrand: Array<string> = [
   'Ferrari',
   'Feat',
 ];
+
+export const carsModel: Array<string> = [
+  'X-Ray',
+  '9000-S',
+  'Super',
+  'Turbo',
+  'Sport',
+  'Nitro',
+  'Caravella',
+  'Bold',
+  'Ghost',
+  'Lupa',
+  'West',
+  'Sunset',
+  'Ruby',
+  'RS',
+  'Phantom',
+];

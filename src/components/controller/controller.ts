@@ -35,15 +35,17 @@ class AppController extends Model {
     selectors.getPrevBtn().addEventListener('click', () => {
       switch (page) {
         case PageIds.GaragePage:
-          if (this.page > 1) {
-            this.page -= 1;
-            this.drawCars(this.page);
+          if (this.garagePage > 1) {
+            this.garagePage -= 1;
+            this.drawCars(this.garagePage);
+            localStorage.setItem('page', `${this.garagePage}`);
           }
           break;
         case PageIds.WinnersPage:
           if (this.winnerPage > 1) {
             this.winnerPage -= 1;
             this.drawWinners(this.winnerPage);
+            localStorage.setItem('winnerPage', `${this.winnerPage}`);
           }
           break;
       }
@@ -54,15 +56,17 @@ class AppController extends Model {
     selectors.getNextBtn().addEventListener('click', () => {
       switch (page) {
         case PageIds.GaragePage:
-          if (Math.ceil(this.garageTotalCar / 7 / this.page) > 1) {
-            this.page += 1;
-            this.drawCars(this.page);
+          if (Math.ceil(this.garageTotalCar / 7 / this.garagePage) > 1) {
+            this.garagePage += 1;
+            this.drawCars(this.garagePage);
+            localStorage.setItem('page', `${this.garagePage}`);
           }
           break;
         case PageIds.WinnersPage:
           if (Math.ceil(this.winnersTotalCar / 7 / this.winnerPage) > 1) {
             this.winnerPage += 1;
             this.drawWinners(this.winnerPage);
+            localStorage.setItem('winnerPage', `${this.winnerPage}`);
           }
           break;
       }
@@ -105,6 +109,19 @@ class AppController extends Model {
     selectors.getQuerySelector('.table__header').addEventListener('click', (event) => {
       const target = <HTMLElement>event.target;
       this.getSortWinners(target);
+    });
+  }
+
+  setDataForStorage(): void {
+    selectors.getQuerySelector('.color__wrapper').addEventListener('input', () => {
+      const brandCarCreate = selectors.getBrandName().value;
+      const colorCarCreate = selectors.getColorName().value;
+      localStorage.setItem('brandCarCreate', `${brandCarCreate}`);
+      localStorage.setItem('colorCarCreate', `${colorCarCreate}`);
+      const brandNameUpdate = selectors.getBrandNameUpdate().value;
+      const colorNameUpdate = selectors.getColorNameUpdate().value;
+      localStorage.setItem('brandCarUpdate', `${brandNameUpdate}`);
+      localStorage.setItem('colorCarUpdate', `${colorNameUpdate}`);
     });
   }
 }

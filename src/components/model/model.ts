@@ -1,27 +1,28 @@
 import AppView from '../view/appView';
 import Car from '../view/pages/garage/car/car';
 import CarWinner from '../view/pages/basket/car-winner/car-winner';
-import { CarItem, SpeedData, ViewWinner, Winner, WinnerUpdate, WinnersSort } from '../types/types';
+import { CarItem, SpeedData, Winner, WinnersSort, PageIds } from '../types/types';
 import { animation } from './store';
 import { getCars, startCar, stopCar, createCar, getCarId, removeCar, driveCar, getUpdateCar } from './apiCars';
-import { createWinner, deleteWinner, getWinner, getWinnerStatus, getWinners, updateWinner } from './apiWinners';
+import { createWinner, deleteWinner, getWinner, getWinners, updateWinner } from './apiWinners';
 import selectors from '../model/selectors';
-import { getRandomColor, getRandomNum, carsBrand } from './helpers';
+import { getRandomColor, getRandomNum, carsBrand, carsModel } from './helpers';
 import { urlBase } from './store';
 
 export class Model extends AppView {
   car: Car;
   carWinner: CarWinner;
-  page = 1;
+  garagePage = 1;
   winnerPage = 1;
   garageTotalCar = 0;
   winnersTotalCar = 0;
   selectCarId = 0;
   updateFlag = false;
   firstWinnerFlag = false;
-  oreder = '';
+  raceFlag = false;
+  sortFlag = false;
+  sortOrder = '';
   sortWays = '';
-  sortItem = false;
 
   constructor() {
     super();
@@ -44,16 +45,26 @@ export class Model extends AppView {
   }
 
   async raceCar(): Promise<void> {
+    this.raceFlag = true;
     const car = selectors.getQuerySelectorAll('.car');
-    car.forEach((item) => {
+
+    car.forEach(async (item) => {
       this.startDrive(Number(item.dataset.id), item);
+      const success: number = await driveCar(Number(item.dataset.id));
+      const { velocity, distance }: SpeedData = await startCar(Number(item.dataset.id));
+      if (success !== 200) {
+        const butStart = selectors.getTargetQuerySelector(item, '.car__but_drive');
+        window.cancelAnimationFrame(animation[Number(item.dataset.id)].id);
+        butStart.classList.add('but-disabled');
+        butStart.classList.remove('but-active');
+      }
     });
   }
 
-  private getCarForManage(): void {
+  getCarForManage(): void {
     const car = selectors.getQuerySelectorAll('.car');
     car.forEach((item) => {
-      item.addEventListener('click', (e) => {
+      item.addEventListener('click', async (e) => {
         const target = <HTMLElement>e.target;
         const carId = Number(item.dataset.id);
         if (target.classList[2]) {
@@ -64,10 +75,19 @@ export class Model extends AppView {
               break;
             case 'car__but_remove':
               removeCar(carId);
-              this.drawCars(this.page);
+              deleteWinner(carId);
+              this.drawCars(this.garagePage);
               break;
             case 'car__but_drive':
+              this.raceFlag === false;
               this.startDrive(carId, item);
+              const success: number = await driveCar(Number(item.dataset.id));
+              if (success !== 200) {
+                const butStart = selectors.getTargetQuerySelector(item, '.car__but_drive');
+                window.cancelAnimationFrame(animation[Number(item.dataset.id)].id);
+                butStart.classList.add('but-disabled');
+                butStart.classList.remove('but-active');
+              }
               break;
             case 'car__but_stop':
               stopCar(carId);
@@ -81,7 +101,7 @@ export class Model extends AppView {
 
   async updateCar(car: { name: string; color: string }, id: number) {
     await getUpdateCar(car, id);
-    await this.drawCars(this.page);
+    await this.drawCars(this.garagePage);
     this.updateFlag = false;
   }
 
@@ -95,7 +115,7 @@ export class Model extends AppView {
     };
 
     createCar(car);
-    this.drawCars(this.page);
+    this.drawCars(this.garagePage);
   }
 
   async getDataForUpdateCar(id: number): Promise<void> {
@@ -121,20 +141,19 @@ export class Model extends AppView {
   generateCars() {
     for (let i = 1; i <= 100; i++) {
       const car = {
-        name: `${carsBrand[getRandomNum()]}`,
+        name: `${carsBrand[getRandomNum()]} ${carsModel[getRandomNum()]}`,
         color: `${getRandomColor()}`,
       };
       createCar(car);
     }
     setTimeout(() => {
-      this.drawCars(this.page);
+      this.drawCars(this.garagePage);
     }, 1000);
   }
 
   async startDrive(id: number, target: HTMLElement): Promise<void> {
     const butStart = selectors.getTargetQuerySelector(target, '.car__but_drive');
     const butStop = selectors.getTargetQuerySelector(target, '.car__but_stop');
-
     if (!butStart.classList.contains('but-active') && !butStart.classList.contains('but-disabled')) {
       const car = selectors.getTargetQuerySelector(target, '.car__img');
       const road = selectors.getTargetQuerySelector(target, '.car__road');
@@ -144,7 +163,6 @@ export class Model extends AppView {
       const timex = Math.floor(Number(distance) / Number(velocity) / 10);
       const roadWidth = road.clientWidth;
       const speed = roadWidth / timex;
-      const success: { success: boolean } = await driveCar(id);
       let done = false;
       let step = 0;
       const state: {
@@ -159,8 +177,8 @@ export class Model extends AppView {
       const move = () => {
         const carCoord = window.getComputedStyle(car);
         const matrix = new WebKitCSSMatrix(carCoord.transform);
-        if (success.success === false || Math.ceil(matrix.m41) >= roadWidth - 130) {
-          if (this.firstWinnerFlag === false) {
+        if (Math.ceil(matrix.m41) >= roadWidth - 130) {
+          if (this.firstWinnerFlag === false && Math.ceil(matrix.m41) >= roadWidth - 130 && this.raceFlag === true) {
             const timeThen = new Date().getTime();
             const timer = (timeThen - timeNow) / 1000;
             winMessage.style.display = 'block';
@@ -197,7 +215,7 @@ export class Model extends AppView {
   }
 
   async stopDriveAll(): Promise<void> {
-    const carsData = await getCars(this.page);
+    const carsData = await getCars(this.garagePage);
     const data: Array<CarItem> = await carsData.json();
     const car = selectors.getQuerySelectorAll('.car__img');
     const butsStart = selectors.getQuerySelectorAll('.car__but_drive');
@@ -248,7 +266,7 @@ export class Model extends AppView {
     dataWinners.forEach(async (item: Winner) => {
       const car = await getCarId(item.id);
       const data = {
-        id: number,
+        id: page === 1 ? number : number + 10 * page - 10,
         color: car.color,
         name: car.name,
         wins: item.wins,
@@ -305,24 +323,72 @@ export class Model extends AppView {
       this.sortWays = sort;
     }
     if (sort === this.sortWays) {
-      if (this.sortItem === false) {
-        this.sortItem = true;
+      if (this.sortFlag === false) {
+        this.sortFlag = true;
         target.classList.add('increase');
         target.classList.remove('decrease');
         sortId = 'ASC';
       } else {
-        this.sortItem = false;
+        this.sortFlag = false;
         target.classList.remove('increase');
         target.classList.add('decrease');
         sortId = 'DESC';
       }
     } else {
-      this.sortItem = true;
+      this.sortFlag = true;
       this.sortWays = sort;
       target.classList.add('increase');
       target.classList.remove('decrease');
       sortId = 'ASC';
     }
+    localStorage.setItem('sortOrder', `${sortId}`);
+    localStorage.setItem('sortWay', `${sort}`);
     return sortId;
+  }
+
+  getDataFromStorageGarage(): void {
+    //page
+    const page = JSON.parse(localStorage.getItem('page') as string);
+    if (page) {
+      this.garagePage = page;
+    }
+
+    //create car
+    const brandCarCreate = localStorage.getItem('brandCarCreate');
+    const colorCarCreate = localStorage.getItem('colorCarCreate');
+
+    if (brandCarCreate) {
+      selectors.getBrandName().value = brandCarCreate;
+    }
+    if (colorCarCreate) {
+      selectors.getColorName().value = colorCarCreate;
+    }
+
+    //updateCar
+    const brandCarUpdate = localStorage.getItem('brandCarUpdate');
+    const colorCarUpdate = localStorage.getItem('colorCarUpdate');
+
+    if (brandCarUpdate) {
+      selectors.getBrandNameUpdate().value = brandCarUpdate;
+    }
+    if (colorCarUpdate) {
+      selectors.getColorNameUpdate().value = colorCarUpdate;
+    }
+  }
+
+  getDataFromStorageWinners(): void {
+    //page
+    const winnerPage = JSON.parse(localStorage.getItem('winnerPage') as string);
+    if (winnerPage) {
+      this.winnerPage = winnerPage;
+    }
+
+    //sort
+    const sortOrder = localStorage.getItem('sortOrder');
+    const sortWay = localStorage.getItem('sortWay');
+    if (sortOrder && sortWay) {
+      this.sortOrder = sortOrder;
+      this.sortWays = sortWay;
+    }
   }
 }

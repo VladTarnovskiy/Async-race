@@ -11,15 +11,9 @@ export const getWinners = async (
   page: number,
   sort?: string | null,
   order?: string | null,
-  limit = 7
+  limit = 10
 ): Promise<Response> => {
   return await fetch(`${urlBase}/winners?_page=${page}&_limit=${limit}&_sort=${sort}&_order=${order}`);
-};
-
-export const getWinnerStatus = async (id: number): Promise<number> => {
-  const response = await fetch(`${urlBase}/winners/${id}`);
-  const status = await response.status;
-  return status;
 };
 
 export const createWinner = async (body: Winner): Promise<void> => {

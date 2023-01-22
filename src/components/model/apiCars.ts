@@ -13,7 +13,6 @@ export const startCar = async (id: number): Promise<SpeedData> => {
 };
 
 export const stopCar = async (id: number): Promise<void> => {
-  window.cancelAnimationFrame(animation[id].id);
   await fetch(`${urlBase}/engine?id=${id}&status=stopped`, {
     method: 'PATCH',
   });
@@ -45,11 +44,12 @@ export const createCar = async (car: { name: string; color: string }) => {
   });
 };
 
-export const driveCar = async (id: number): Promise<{ success: boolean }> => {
-  const response = await fetch(`${urlBase}/engine?id=${id}&status=status=drive`, {
+export const driveCar = async (id: number): Promise<number> => {
+  const response = await fetch(`${urlBase}/engine?id=${id}&status=drive`, {
+    // &status=status=drive`
     method: 'PATCH',
   });
-  return response.status !== 200 ? { success: false } : { ...(await response.json()) };
+  return response.status;
 };
 
 export const removeCar = async (id: number) => {

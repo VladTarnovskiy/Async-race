@@ -16,17 +16,20 @@ class Router extends AppController {
     if (idPage === PageIds.GaragePage || idPage === '') {
       this.firstWinnerFlag = false;
       this.view.drawMain();
+      this.getDataFromStorageGarage();
       this.getRaceCar();
       this.getCreateCar();
       this.garageNextPage(PageIds.GaragePage);
       this.garagePrevPage(PageIds.GaragePage);
-      this.drawCars(this.page);
+      this.drawCars(this.garagePage);
       this.getUpdateCar();
       this.getGenerateCars();
       this.getResetCars();
+      this.setDataForStorage();
     } else if (idPage === PageIds.WinnersPage) {
       this.view.drawBasket();
-      this.drawWinners(this.winnerPage);
+      this.getDataFromStorageWinners();
+      this.drawWinners(this.winnerPage, this.sortWays, this.sortOrder);
       this.garageNextPage(PageIds.WinnersPage);
       this.garagePrevPage(PageIds.WinnersPage);
       this.sortWinners();
