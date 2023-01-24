@@ -233,8 +233,9 @@ export class Model extends AppView {
 
     data.forEach((item: CarItem) => {
       stopCar(item.id);
-
-      window.cancelAnimationFrame(animation[item.id].id);
+      if (animation[item.id].id) {
+        window.cancelAnimationFrame(animation[item.id].id);
+      }
     });
 
     car.forEach((item) => {
