@@ -78,15 +78,20 @@ export class Model extends AppView {
               this.drawCars(this.garagePage);
               break;
             case 'car__but_drive':
-              this.raceFlag === false;
-              this.startDrive(carId, item);
-              const success: number = await driveCar(Number(item.dataset.id));
-              if (success !== 200) {
-                const butStart = selectors.getTargetQuerySelector(item, '.car__but_drive');
-                window.cancelAnimationFrame(animation[Number(item.dataset.id)].id);
-                butStart.classList.add('but-disabled');
-                butStart.classList.remove('but-active');
+              const butStart = selectors.getTargetQuerySelector(item, '.car__but_drive');
+              let success: number;
+              if (!butStart.classList.contains('but-active') && !butStart.classList.contains('but-disabled')) {
+                success = await driveCar(Number(item.dataset.id));
+                this.raceFlag === false;
+                this.startDrive(carId, item);
+                if (success !== 200) {
+                  const butStart = selectors.getTargetQuerySelector(item, '.car__but_drive');
+                  window.cancelAnimationFrame(animation[Number(item.dataset.id)].id);
+                  butStart.classList.add('but-disabled');
+                  butStart.classList.remove('but-active');
+                }
               }
+
               break;
             case 'car__but_stop':
               stopCar(carId);
@@ -151,8 +156,11 @@ export class Model extends AppView {
   }
 
   async startDrive(id: number, target: HTMLElement): Promise<void> {
+    // console.log(butStart.classList.contains('but-active'));
+    // console.log(!butStart.classList.contains('but-active') && !butStart.classList.contains('but-disabled'));
     const butStart = selectors.getTargetQuerySelector(target, '.car__but_drive');
     const butStop = selectors.getTargetQuerySelector(target, '.car__but_stop');
+
     if (!butStart.classList.contains('but-active') && !butStart.classList.contains('but-disabled')) {
       const car = selectors.getTargetQuerySelector(target, '.car__img');
       const road = selectors.getTargetQuerySelector(target, '.car__road');
@@ -233,7 +241,7 @@ export class Model extends AppView {
 
     data.forEach((item: CarItem) => {
       stopCar(item.id);
-      if (animation[item.id].id) {
+      if (animation[item.id]) {
         window.cancelAnimationFrame(animation[item.id].id);
       }
     });
