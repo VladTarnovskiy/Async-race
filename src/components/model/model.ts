@@ -83,7 +83,7 @@ export class Model extends AppView {
                 this.startDrive(carId, item);
                 const success: number = await driveCar(Number(item.dataset.id));
                 this.raceFlag === false;
-                if (success !== 200) {
+                if (success !== 200 && success !== 429) {
                   if (animation[Number(item.dataset.id)]) {
                     const butStart = selectors.getTargetQuerySelector(item, '.car__but_drive');
                     window.cancelAnimationFrame(animation[Number(item.dataset.id)].id);
