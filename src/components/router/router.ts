@@ -14,27 +14,11 @@ class Router extends AppController {
   renderNewPage(idPage: string): void {
     selectors.body().replaceChildren();
     if (idPage === PageIds.GaragePage || idPage === '') {
-      this.firstWinnerFlag = false;
-      this.view.drawMain();
-      this.getDataFromStorageGarage();
-      this.getRaceCar();
-      this.getCreateCar();
-      this.garageNextPage(PageIds.GaragePage);
-      this.garagePrevPage(PageIds.GaragePage);
-      this.drawCars(this.garagePage);
-      this.getUpdateCar();
-      this.getGenerateCars();
-      this.getResetCars();
-      this.setDataForStorage();
+      this.initGaragePage();
     } else if (idPage === PageIds.WinnersPage) {
-      this.view.drawBasket();
-      this.getDataFromStorageWinners();
-      this.drawWinners(this.winnerPage, this.sortWays, this.sortOrder);
-      this.garageNextPage(PageIds.WinnersPage);
-      this.garagePrevPage(PageIds.WinnersPage);
-      this.sortWinners();
+      this.initWinnersPage();
     } else {
-      this.view.drawError();
+      this.initError();
     }
   }
 
@@ -48,6 +32,34 @@ class Router extends AppController {
       const hash = window.location.hash.split('?')[0];
       this.renderNewPage(hash);
     });
+  }
+
+  initGaragePage(): void {
+    this.firstWinnerFlag = false;
+    this.view.drawMain();
+    this.getDataFromStorageGarage();
+    this.getRaceCar();
+    this.getCreateCar();
+    this.garageNextPage(PageIds.GaragePage);
+    this.garagePrevPage(PageIds.GaragePage);
+    this.drawCars(this.garagePage);
+    this.getUpdateCar();
+    this.getGenerateCars();
+    this.getResetCars();
+    this.setDataForStorage();
+  }
+
+  initWinnersPage(): void {
+    this.view.drawBasket();
+    this.getDataFromStorageWinners();
+    this.drawWinners(this.winnerPage, this.sortWays, this.sortOrder);
+    this.garageNextPage(PageIds.WinnersPage);
+    this.garagePrevPage(PageIds.WinnersPage);
+    this.sortWinners();
+  }
+
+  initError(): void {
+    this.view.drawError();
   }
 
   run(): void {
