@@ -79,16 +79,17 @@ export class Model extends AppView {
               break;
             case 'car__but_drive':
               const butStart = selectors.getTargetQuerySelector(item, '.car__but_drive');
-              let success: number;
               if (!butStart.classList.contains('but-active') && !butStart.classList.contains('but-disabled')) {
-                success = await driveCar(Number(item.dataset.id));
+                const success: number = await driveCar(Number(item.dataset.id));
                 this.raceFlag === false;
                 this.startDrive(carId, item);
                 if (success !== 200) {
-                  const butStart = selectors.getTargetQuerySelector(item, '.car__but_drive');
-                  window.cancelAnimationFrame(animation[Number(item.dataset.id)].id);
-                  butStart.classList.add('but-disabled');
-                  butStart.classList.remove('but-active');
+                  if (animation[Number(item.dataset.id)]) {
+                    const butStart = selectors.getTargetQuerySelector(item, '.car__but_drive');
+                    window.cancelAnimationFrame(animation[Number(item.dataset.id)].id);
+                    butStart.classList.add('but-disabled');
+                    butStart.classList.remove('but-active');
+                  }
                 }
               }
 
