@@ -80,9 +80,9 @@ export class Model extends AppView {
             case 'car__but_drive':
               const butStart = selectors.getTargetQuerySelector(item, '.car__but_drive');
               if (!butStart.classList.contains('but-active') && !butStart.classList.contains('but-disabled')) {
+                this.startDrive(carId, item);
                 const success: number = await driveCar(Number(item.dataset.id));
                 this.raceFlag === false;
-                this.startDrive(carId, item);
                 if (success !== 200) {
                   if (animation[Number(item.dataset.id)]) {
                     const butStart = selectors.getTargetQuerySelector(item, '.car__but_drive');
