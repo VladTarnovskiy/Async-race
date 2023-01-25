@@ -10,10 +10,10 @@ class AppController extends Model {
   getRaceCar(): void {
     const raceButton = selectors.getRaceBtn();
     const resetButton = selectors.getResetBtn();
-    selectors.getRaceBtn().addEventListener('click', () => {
-      if (!raceButton.classList.contains('but-disabled')) {
-        raceButton.classList.add('but-disabled');
-        resetButton.classList.add('but-active');
+    selectors.getRaceBtn()?.addEventListener('click', () => {
+      if (!raceButton?.classList.contains('but-disabled')) {
+        raceButton?.classList.add('but-disabled');
+        resetButton?.classList.add('but-active');
         this.raceCar();
       }
     });
@@ -23,16 +23,18 @@ class AppController extends Model {
     const brandName = selectors.getBrandName();
     const colorName = selectors.getColorName();
     const createButton = selectors.getCreateBtn();
-    createButton.addEventListener('click', () => {
+    createButton?.addEventListener('click', () => {
       this.getDataForCreateCar();
     });
-    colorName.addEventListener('input', () => {
-      brandName.style.border = `3px ${colorName.value} solid`;
+    colorName?.addEventListener('input', () => {
+      if (brandName) {
+        brandName.style.border = `3px ${colorName.value} solid`;
+      }
     });
   }
 
   garagePrevPage(page: string): void {
-    selectors.getPrevBtn().addEventListener('click', () => {
+    selectors.getPrevBtn()?.addEventListener('click', () => {
       switch (page) {
         case PageIds.GaragePage:
           if (this.garagePage > 1) {
@@ -53,7 +55,7 @@ class AppController extends Model {
   }
 
   garageNextPage(page: string): void {
-    selectors.getNextBtn().addEventListener('click', () => {
+    selectors.getNextBtn()?.addEventListener('click', () => {
       switch (page) {
         case PageIds.GaragePage:
           if (Math.ceil(this.garageTotalCar / 7 / this.garagePage) > 1) {
@@ -76,8 +78,8 @@ class AppController extends Model {
   getUpdateCar(): void {
     const brandName = selectors.getBrandNameUpdate();
     const colorName = selectors.getColorNameUpdate();
-    selectors.getUpdateBtn().addEventListener('click', () => {
-      if (this.updateFlag === true) {
+    selectors.getUpdateBtn()?.addEventListener('click', () => {
+      if (this.updateFlag === true && brandName && colorName) {
         const car = {
           name: `${brandName.value}`,
           color: `${colorName.value}`,
@@ -86,40 +88,42 @@ class AppController extends Model {
       }
     });
 
-    colorName.addEventListener('input', () => {
-      brandName.style.border = `3px ${colorName.value} solid`;
+    colorName?.addEventListener('input', () => {
+      if (brandName) {
+        brandName.style.border = `3px ${colorName.value} solid`;
+      }
     });
   }
 
   getGenerateCars(): void {
-    selectors.getGenerateBtn().addEventListener('click', () => {
+    selectors.getGenerateBtn()?.addEventListener('click', () => {
       this.generateCars();
     });
   }
 
   getResetCars(): void {
-    selectors.getResetBtn().addEventListener('click', () => {
-      selectors.getRaceBtn().classList.remove('but-disabled');
-      selectors.getResetBtn().classList.remove('but-active');
+    selectors.getResetBtn()?.addEventListener('click', () => {
+      selectors.getRaceBtn()?.classList.remove('but-disabled');
+      selectors.getResetBtn()?.classList.remove('but-active');
       this.stopDriveAll();
     });
   }
 
   sortWinners(): void {
-    selectors.getQuerySelector('.table__header').addEventListener('click', (event) => {
+    selectors.getQuerySelector('.table__header')?.addEventListener('click', (event) => {
       const target = <HTMLElement>event.target;
       this.getSortWinners(target);
     });
   }
 
   setDataForStorage(): void {
-    selectors.getQuerySelector('.color__wrapper').addEventListener('input', () => {
-      const brandCarCreate = selectors.getBrandName().value;
-      const colorCarCreate = selectors.getColorName().value;
+    selectors.getQuerySelector('.color__wrapper')?.addEventListener('input', () => {
+      const brandCarCreate = selectors.getBrandName()?.value;
+      const colorCarCreate = selectors.getColorName()?.value;
       localStorage.setItem('brandCarCreate', `${brandCarCreate}`);
       localStorage.setItem('colorCarCreate', `${colorCarCreate}`);
-      const brandNameUpdate = selectors.getBrandNameUpdate().value;
-      const colorNameUpdate = selectors.getColorNameUpdate().value;
+      const brandNameUpdate = selectors.getBrandNameUpdate()?.value;
+      const colorNameUpdate = selectors.getColorNameUpdate()?.value;
       localStorage.setItem('brandCarUpdate', `${brandNameUpdate}`);
       localStorage.setItem('colorCarUpdate', `${colorNameUpdate}`);
     });

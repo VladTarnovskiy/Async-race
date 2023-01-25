@@ -12,7 +12,7 @@ class Router extends AppController {
   }
 
   renderNewPage(idPage: string): void {
-    selectors.body().replaceChildren();
+    selectors.body()?.replaceChildren();
     if (idPage === PageIds.GaragePage || idPage === '') {
       this.initGaragePage();
     } else if (idPage === PageIds.WinnersPage) {
