@@ -1,0 +1,47 @@
+%transition {
+    transition: all .2s ease-out;
+}
+
+%btn-hover {
+    background-color: $orange-color;
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+%wrapper {
+    max-width: 1440px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin: auto;
+}
+
+%blocksettings {
+    border-radius: 10px;
+    padding: 10px;
+}
+
+%background-img {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+%block-style {
+    background-color: rgba($light-blue-color, $alpha: 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+%title-block-style {
+    background-color: rgba($orange-color, $alpha: 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+%block-border {
+    padding: 5px;
+    border: 1px $neon-blue-color solid;
+    border-radius: 10px;
+}

@@ -1,0 +1,37 @@
+.button {
+  font-family: $main-font;
+  border: none;
+  border-radius: 10px;
+  @extend %transition;
+  box-shadow: 0px 0px 14px $neon-blue-color;
+  display: block;
+  text-decoration: none;
+  text-align: center;
+  background-color: $white-color;
+  box-sizing: border-box;
+  color: $blue-color;
+
+  &:hover {
+    @extend %btn-hover;
+    transform: scale(1.04);
+  }
+
+  &:active {
+    @extend %btn-hover;
+    transform: scale(1.01);
+    color: $neon-blue-color;
+  }
+}
+
+.button.but-active {
+  background-color: $orange-color;
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+.button.but-disabled {
+  background-color: grey;
+  color: $black-color;
+  transform: scale(0.95);
+  cursor: auto;
+}

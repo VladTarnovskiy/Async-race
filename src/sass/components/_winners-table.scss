@@ -1,0 +1,70 @@
+.winners__table {
+    width: 910px;
+    margin: auto;
+    background-color: rgba($light-blue-color, $alpha: 0.8);
+
+    .table__header {
+        display: flex;
+        justify-content: space-between;
+        font-family: $roboto-bold-font;
+        font-size: 2.5rem;
+        text-align: center;
+        background-color: rgba($blue-color, $alpha: 0.2);
+        height: 50px;
+    }
+
+    .table__header-item {
+        width: 180px;
+        border: 1px $black-color solid;
+        padding-top: 10px;
+
+        .table__header_wins-icon,
+        .table__header_time-icon {
+            background-image: url(../assets/trophy.png);
+            background-repeat: no-repeat;
+            height: 24px;
+            width: 24px;
+            margin-left: 5px;
+            margin-top: 4px;
+            background-position: center;
+            display: inline-block;
+        }
+
+        .table__header_time-icon {
+            background-image: url(../assets/stopwatch.png);
+
+        }
+    }
+
+    .table__header_name {
+        width: 308px;
+    }
+
+    .table__header-item.table__header_sort {
+        background-color: #f77001;
+        cursor: pointer;
+    }
+
+    .sort_indicator {
+        display: none;
+        box-sizing: border-box;
+        font-size: 2rem;
+        height: 33px;
+        padding-left: 3px;
+        color: $black-color;
+    }
+
+    .table__header-item.decrease {
+        .sort_indicator {
+            display: inline-block;
+            transform: rotate(180deg);
+        }
+    }
+
+    .table__header-item.increase {
+        .sort_indicator {
+            display: inline-block;
+            transform: rotate(0deg);
+        }
+    }
+}

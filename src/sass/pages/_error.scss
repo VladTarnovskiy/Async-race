@@ -1,0 +1,25 @@
+.error_wrapper {
+    margin-top: 100px;
+    color: $black-color;
+    text-align: center;
+
+    .error_code {
+        font-family: $main-font;
+        font-size: 4rem;
+        margin-bottom: 10px;
+    }
+
+    .error_descript {
+        font-family: $roboto-light-font;
+        font-size: 3rem;
+        margin-bottom: 100px;
+    }
+
+    .error_animation {
+        background-image: url(https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif);
+        background-repeat: no-repeat;
+        height: 400px;
+        background-position: center;
+
+    }
+}
